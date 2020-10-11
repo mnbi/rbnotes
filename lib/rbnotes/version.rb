@@ -1,0 +1,3 @@
+module Rbnotes
+  VERSION = "0.1.0"
+end

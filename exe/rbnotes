@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require "rbnotes"
+
+rbnotes_version = "rbnotes #{Rbnotes::VERSION}"
+textrepo_version = "textrepo #{Textrepo::VERSION}"
+puts "#{rbnotes_version} (#{textrepo_version})"
