@@ -1,0 +1,30 @@
+GIT
+  remote: https://github.com/mnbi/textrepo.git
+  revision: 0f48f81bd2402f10f21903dd3849c1e56158545e
+  branch: main
+  specs:
+    textrepo (0.3.0)
+
+PATH
+  remote: .
+  specs:
+    rbnotes (0.1.0)
+      textrepo
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.14.2)
+    rake (12.3.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  minitest (~> 5.0)
+  rake (~> 12.0)
+  rbnotes!
+  textrepo!
+
+BUNDLED WITH
+   2.1.4
