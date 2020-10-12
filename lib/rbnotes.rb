@@ -1,7 +1,8 @@
 require "textrepo"
-require "rbnotes/version"
 
 module Rbnotes
   class Error < StandardError; end
-  # Your code goes here...
+
+  require_relative "rbnotes/version"
+  require_relative "rbnotes/commands"
 end
