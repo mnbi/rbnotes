@@ -4,12 +4,8 @@ class RbnotesCommandsShowTest < Minitest::Test
   include RbnotesTestUtils      # defined in test_helper.rb
   def setup
     @pager_out = File.expand_path("sandbox/show_pager.out", __dir__)
-    @conf_ro = {
-      :repository_type => :file_system,
-      :repository_name => "fixtures/test_repo",
-      :repository_base => File.expand_path(__dir__),
-      :pager => "cat > #{@pager_out}",
-    }
+    @conf_ro = CONF_RO.dup
+    @conf_ro[:pager] = "cat > #{@pager_out}"
   end
 
   def test_that_it_can_show_the_specified_note
@@ -20,10 +16,11 @@ class RbnotesCommandsShowTest < Minitest::Test
     cmd = load_cmd(:show)
 
     files.each { |file|
-      timestamp = file[0..-4]
-      file = File.expand_path("fixtures/test_repo/2020/10/#{file}", __dir__)
+      timestamp_str = file[0..-4]
+      subdir = File.join([0..3, 4..5].map{|r| timestamp_str[r]})
+      file = File.join(repo_path(@conf_ro), subdir, file)
 
-      cmd.execute([timestamp], @conf_ro)
+      cmd.execute([timestamp_str], @conf_ro)
 
       assert FileUtils.identical?(file, @pager_out)
     }

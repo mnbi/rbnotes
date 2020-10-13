@@ -7,18 +7,29 @@ require "rbnotes"
 require "minitest/autorun"
 
 module RbnotesTestUtils
+  CONF_RO = {
+    :repository_type => :file_system,
+    :repository_name => "test_repo",
+    :repository_base => File.expand_path("fixtures", __dir__),
+  }
+
+  CONF_RW = {
+    :repository_type => :file_system,
+    :repository_name => "test_repo",
+    :repository_base => File.expand_path("sandbox", __dir__),
+  }
+
+  def repo_path(conf)
+    [:repository_base, :repository_name].map{|k| conf[k]}.join("/")
+  end
+
   def load_cmd(name)
     Rbnotes::Commands.load(name.to_s)
   end
 
   def execute(name, args, conf)
     cmd = load_cmd(name)
-    result = ""
-    StringIO.open(result, "w") { |out|
-      $stdout = out
-      cmd.execute(args, conf)
-      $stdout = STDOUT
-    }
+    result, _ = capture_io { cmd.execute(args, conf) }
     result
   end
 end

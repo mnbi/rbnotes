@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "textrepo"
+  spec.add_dependency "unicode-display_width", "~> 1.7"
 end

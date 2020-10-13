@@ -1,31 +1,13 @@
+require "io/console/size"
+require "unicode/display_width"
 require "test_helper"
 
 class RbnotesCommandsListTest < Minitest::Test
   include RbnotesTestUtils      # defined in test_helper.rb
-  def setup
-    @conf_ro = {
-      :repository_type => :file_system,
-      :repository_name => "fixtures/test_repo",
-      :repository_base => File.expand_path(__dir__),
-    }
-  end
-
   def test_that_it_can_list_up_all_notes
-    files = [
-      "20201012005000.md",
-      "20201012005000_089.md",
-      "20201012005001.md",
-      "20201012005001_089.md",
-      "20201012005002.md",
-      "20201012005002_089.md",
-    ]
-    cmd = load_cmd(:list)
-    result = ""
-    StringIO.open(result, "w") { |out|
-      $stdout = out
-      cmd.execute([], @conf_ro)
-      $stdout = STDOUT
-    }
+    files = Dir.glob("#{repo_path(CONF_RO)}/**/*.md").map{|f| File.basename(f)}
+
+    result = execute(:list, [], CONF_RO)
 
     refute result.empty?
     result.lines.each { |line|
@@ -33,12 +15,39 @@ class RbnotesCommandsListTest < Minitest::Test
 
       assert files.include?("#{timestamp_str}.md")
 
-      truncated = line[20..-1]
-      repo_path = File.expand_path("fixtures/test_repo", __dir__)
-      note_path = File.expand_path("2020/10/#{timestamp_str}.md", repo_path)
+      truncated = line[20..-1].chomp
+      note_path = File.expand_path("2020/10/#{timestamp_str}.md",
+                                   repo_path(CONF_RO))
       subject = extract_subject(note_path)
 
       assert subject.include?(truncated)
+    }
+  end
+
+  def test_that_it_can_truncate_very_long_subject
+    # prepare test data
+    text_dir = File.expand_path("fixtures/text", __dir__)
+    src_files = ["very_long_subject.md", "very_long_subject_ja.md"].map { |f|
+      File.expand_path(f, text_dir)
+    }
+
+    conf = CONF_RO.dup
+    conf[:repository_base] = File.expand_path("sandbox", __dir__)
+
+    sandbox_repo = repo_path(conf)
+    timestamp_strs = ["20201013173800", "20201013173900"]
+    src_files.each_with_index { |f, i|
+      stmp_str = timestamp_strs[i]
+      dst_dir = [0..3, 4..5].map{|r| stmp_str[r]}.join("/")
+      dst_path = File.expand_path("#{dst_dir}/#{stmp_str}.md", sandbox_repo)
+      FileUtils.mkdir_p(File.dirname(dst_path))
+      FileUtils.cp(f, dst_path)
+    }
+
+    # execute test
+    result = execute(:list, [], conf)
+    result.split.each { |line|
+      assert IO.console_size[1] >= Unicode::DisplayWidth.of(line)
     }
   end
 
