@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    rbnotes (0.1.0)
+    rbnotes (0.1.1)
       textrepo
       unicode-display_width (~> 1.7)
 
