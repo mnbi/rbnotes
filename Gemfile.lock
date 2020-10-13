@@ -10,12 +10,14 @@ PATH
   specs:
     rbnotes (0.1.0)
       textrepo
+      unicode-display_width (~> 1.7)
 
 GEM
   remote: https://rubygems.org/
   specs:
     minitest (5.14.2)
     rake (12.3.3)
+    unicode-display_width (1.7.0)
 
 PLATFORMS
   ruby

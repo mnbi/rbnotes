@@ -1,3 +1,4 @@
+require "unicode/display_width"
 require "io/console/size"
 
 module Rbnotes
@@ -46,11 +47,7 @@ module Rbnotes
       count = 0
       result = ""
       str.each_char { |c|
-        # TODO: fix
-        # This code is ugly.  It assumes that each non-ascii character
-        # always occupy the width of 2 ascii characters in a terminal.
-        # I am not sure the assumption is appropriate or not.
-        count += c.ascii_only? ? 1 : 2
+        count += Unicode::DisplayWidth.of(c)
         break if count > size
         result << c
       }
