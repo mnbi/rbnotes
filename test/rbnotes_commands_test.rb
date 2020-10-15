@@ -16,6 +16,24 @@ class RbnotesCommandsTest < Minitest::Test
     }
   end
 
+  # Builtins::Help
+  def test_that_builtin_help_message_contains_abou_all_of_builtins
+    result = execute(:help, [], CONF_RW)
+    builtins = Rbnotes::Commands::Builtins.constants.map { |sym|
+      obj = Rbnotes::Commands::Builtins.const_get(sym)
+      if obj.instance_of?(Class) &&
+         obj.superclass == Rbnotes::Commands::Command
+        obj.to_s.split("::")[-1]
+      else
+        nil
+      end
+    }.compact
+
+    builtins.each { |sym|
+      assert result.include?(sym.to_s.downcase)
+    }
+  end
+
   # Builtins::Repo
   def test_that_builtin_repo_returns_path_of_the_repository
     expected = repo_path(CONF_RW)

@@ -22,6 +22,7 @@ command:
     list NUM        : list NUM notes
     show STAMP      : show the note specified with STAMP
 
+    conf            : print the current configuraitons
     repo            : print the repository path
     stamp  TIME_STR : convert TIME_STR into a timestamp
     time   STAMP    : convert STAMP into a time string
