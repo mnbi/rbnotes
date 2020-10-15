@@ -6,4 +6,4 @@ gemspec
 gem "rake", "~> 12.0"
 gem "minitest", "~> 5.0"
 
-gem 'textrepo', github: 'mnbi/textrepo', branch: 'main'
+gem 'textrepo', "~> 0.4"
