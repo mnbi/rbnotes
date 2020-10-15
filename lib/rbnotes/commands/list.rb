@@ -8,7 +8,7 @@ module Rbnotes
       max = (args.shift || @row - 3).to_i
 
       @repo = Textrepo.init(conf)
-      notes = @repo.notes.sort{|a, b| b <=> a}
+      notes = @repo.entries.sort{|a, b| b <=> a}
       notes[0, max].each { |timestamp_str|
         puts make_headline(timestamp_str)
       }

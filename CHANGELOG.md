@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.1.2] - 2020-10-15
+### Fixed
+- Adapt the API change in `textrepo` (0.4.0).
+
 ## [0.1.0] - 2020-10-12
 ### Added
 - Import files those are part of `examples` in the `textrepo` gem.
