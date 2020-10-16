@@ -21,6 +21,7 @@ command:
     import FILE     : import a FILE into the repository
     list NUM        : list NUM notes
     show STAMP      : show the note specified with STAMP
+    delete STAMP    : delete the note specified with STAMP
 
     conf            : print the current configuraitons
     repo            : print the repository path
