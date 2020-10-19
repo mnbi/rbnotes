@@ -32,6 +32,12 @@ module RbnotesTestUtils
     result, _ = capture_io { cmd.execute(args, conf) }
     result
   end
+
+  def timestamp_to_path(timestamp, repo)
+    return nil unless timestamp.size == 14
+    dirname = File.expand_path(File.join([0..3, 4..5].map{|r| timestamp[r]}), repo)
+    File.join(dirname, "#{timestamp}.md")
+  end
 end
 
 FileUtils.mkdir_p(File.expand_path("sandbox", __dir__))
