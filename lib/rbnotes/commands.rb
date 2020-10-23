@@ -1,10 +1,23 @@
 module Rbnotes
+  ##
+  # This module defines all command classes of rbnotes.  Each command
+  # class must be derived from Rbnotes::Commands::Command class.
   module Commands
+    ##
+    # The base class for a command class.
     class Command
+      ##
+      # :call-seq:
+      #   Array, Hash -> nil
+      #   - Array: arguments for each command
+      #   - Hash : rbnotes configuration
+      #
       def execute(args, conf)
         Builtins::DEFAULT_CMD.new.execute(args, conf)
       end
     end
+
+    # :stopdoc:
 
     # Built-in commands:
     # - repo: prints the absolute path of the repository.
@@ -21,6 +34,7 @@ command:
     import FILE     : import a FILE into the repository
     list NUM        : list NUM notes
     show STAMP      : show the note specified with STAMP
+    delete STAMP    : delete the note specified with STAMP
 
     conf            : print the current configuraitons
     repo            : print the repository path
@@ -94,7 +108,18 @@ USAGE
 
     DEFAULT_CMD_NAME = "help"
 
+    # :startdoc:
+
     class << self
+      ##
+      # Loads a class to perfom the command, then returns an instance
+      # of the class.
+      #
+      # :call-seq:
+      #   "import" -> an object of Rbnotes::Commnads::Import
+      #   "list"   -> an object of Rbnotes::Commands::List
+      #   "show"   -> an object of Rbnotes::Commands::Show
+      #
       def load(cmd_name)
         cmd_name ||= DEFAULT_CMD_NAME
         klass_name =  cmd_name.capitalize

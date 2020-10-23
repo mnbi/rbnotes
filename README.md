@@ -32,9 +32,15 @@ rbnotes [global_opts] [command] [command_opts] [args]
 - import
   - imports existing files
 - list
-   - list notes in the repository with their timestamps and subject
+  - lists notes in the repository with their timestamps and subject
 - show
-   - show the content of a note
+  - shows the content of a note
+- add
+  - adds a new note to the repository using an external editor
+- update
+  - update the content of the specified note using an external editor
+- delete
+  - deletes the specified note form the repository
 
 ## Development
 

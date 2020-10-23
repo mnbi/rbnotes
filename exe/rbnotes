@@ -2,29 +2,36 @@
 
 require "rbnotes"
 
+include Rbnotes
+
 DEBUG = true
 
-module Rbnotes
-  class App
-    def initialize
-      @conf = default_conf
-    end
+class App
+  def initialize
+    @conf = default_conf
+  end
 
-    def default_conf
-      {
-        :repository_type => :file_system,
-        :repository_name => DEBUG ? "sandbox/notes_dev" : "notes",
-        :repository_base => File.expand_path("~"),
-        :pager => "bat",
-      }
-    end
+  def default_conf
+    {
+      :repository_type => :file_system,
+      :repository_name => DEBUG ? "notes_dev" : "notes",
+      :repository_base => File.expand_path(DEBUG ? "~/sandbox" : "~"),
+      :pager => "bat",
+      :editor => "/usr/local/bin/emacsclient",
+    }
+  end
 
-    def run(args)
-      cmd = args.shift
-      Rbnotes::Commands.load(cmd).execute(args, @conf)
-    end
+  def run(args)
+    cmd = args.shift
+    Commands.load(cmd).execute(args, @conf)
   end
 end
 
-app = Rbnotes::App.new
-app.run(ARGV)
+app = App.new
+begin
+  app.run(ARGV)
+rescue MissingArgumentError, MissingTimestampError,
+       NoEditorError, ProgramAbortError => e
+  puts e.message
+  exit 1
+end

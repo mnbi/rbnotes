@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.1.4] - 2020-10-23
+### Added
+- Add more commands (add/update/delete).
+  - Add and update commands use a external editor to edit a note.
+  - Delete command remove the specified note from the repository.
+- Add a new task into `Rakefile` to generate RI docs.
+  - The intention of the task is to verify RI docs.
+
+### Fixed
+- Refactor some tests.
+
+## [0.1.3] - 2020-10-15
+### Fixed
+- Add help text for the `conf` command.
+
 ## [0.1.2] - 2020-10-15
 ### Fixed
 - Adapt the API change in `textrepo` (0.4.0).

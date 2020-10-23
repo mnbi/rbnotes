@@ -2,8 +2,14 @@ require "test_helper"
 
 class RbnotesCommandsImportTest < Minitest::Test
   include RbnotesTestUtils      # defined in test_helper.rb
+
+  def setup
+    @conf_rw = CONF_RW.dup
+    @conf_rw[:repository_name] = "test_repo_for_import"
+  end
+
   def teardown
-    FileUtils.rm_r(repo_path(CONF_RW))
+    FileUtils.rm_r(repo_path(@conf_rw))
   end
 
   def test_that_it_can_import_an_existing_file
@@ -13,7 +19,7 @@ class RbnotesCommandsImportTest < Minitest::Test
     refute FileTest.exist?(expected)
 
     # execute rbnotes command
-    execute(:import, [src_file], CONF_RW)
+    execute(:import, [src_file], @conf_rw)
 
     assert FileTest.exist?(expected)
     assert FileUtils.identical?(src_file, expected)
@@ -32,7 +38,7 @@ class RbnotesCommandsImportTest < Minitest::Test
     refute FileTest.exist?(expected)
 
     # execute rbnotes command
-    execute(:import, [src_file], CONF_RW)
+    execute(:import, [src_file], @conf_rw)
 
     assert FileTest.exist?(expected)
     assert FileUtils.identical?(src_file, expected)
@@ -42,9 +48,7 @@ class RbnotesCommandsImportTest < Minitest::Test
   def expected_path(org_file)
     st = File::Stat.new(org_file)
     btime = st.respond_to?(:birthtime) ? st.birthtime : st.mtime
-    timestamp_str = btime.strftime("%Y%m%d%H%M%S")
-    dirname = btime.strftime("%Y/%m")
 
-    File.expand_path("#{dirname}/#{timestamp_str}.md", repo_path(CONF_RW))
+    timestamp_to_path(btime.strftime("%Y%m%d%H%M%S"), repo_path(@conf_rw))
   end
 end
