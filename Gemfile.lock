@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rbnotes (0.1.4)
+    rbnotes (0.2.0)
       textrepo (~> 0.4)
       unicode-display_width (~> 1.7)
 
