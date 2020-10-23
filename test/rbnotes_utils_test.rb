@@ -2,12 +2,32 @@ require "tmpdir"
 require "test_helper"
 
 class RbnotesUtilsTest < Minitest::Test
+  include RbnotesTestUtils
+
   def setup
     @clean_files = []
   end
 
   def teardown
     FileUtils.rm_f(@clean_files)
+  end
+
+  # find_editor
+  def test_find_editor_can_find_some_external_editor
+    abs_of_editor = "/usr/local/bin/emacsclient"
+    abs_of_nano = search_in_paths("nano")
+    abs_of_vi = search_in_paths("vi")
+
+    result = Rbnotes::Utils.find_editor(abs_of_editor)
+    if FileTest.exist?(abs_of_editor)
+      assert_equal abs_of_editor, result
+    elsif FileTest.exist?(abs_of_nano)
+      assert_equal abs_of_nano, result
+    elsif FileTest.exist?(abs_of_vi)
+      assert_equal abs_of_vi, result
+    else
+      refute result
+    end
   end
 
   # find_program(names)

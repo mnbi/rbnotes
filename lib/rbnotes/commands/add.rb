@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 module Rbnotes::Commands
   ##
   # Adds a new note to the repository.  A new timestamp is generated

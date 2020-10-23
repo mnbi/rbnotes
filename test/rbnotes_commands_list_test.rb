@@ -16,8 +16,7 @@ class RbnotesCommandsListTest < Minitest::Test
       assert files.include?("#{timestamp_str}.md")
 
       truncated = line[20..-1].chomp
-      note_path = File.expand_path("2020/10/#{timestamp_str}.md",
-                                   repo_path(CONF_RO))
+      note_path = timestamp_to_path(timestamp_str, repo_path(CONF_RO))
       subject = extract_subject(note_path)
 
       assert subject.include?(truncated)
@@ -38,10 +37,7 @@ class RbnotesCommandsListTest < Minitest::Test
     timestamp_strs = ["20201013173800", "20201013173900"]
     src_files.each_with_index { |f, i|
       stmp_str = timestamp_strs[i]
-      dst_dir = [0..3, 4..5].map{|r| stmp_str[r]}.join("/")
-      dst_path = File.expand_path("#{dst_dir}/#{stmp_str}.md", sandbox_repo)
-      FileUtils.mkdir_p(File.dirname(dst_path))
-      FileUtils.cp(f, dst_path)
+      prepare_note_from_file(stmp_str, f, sandbox_repo)
     }
 
     # execute test

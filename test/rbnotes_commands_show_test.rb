@@ -17,8 +17,7 @@ class RbnotesCommandsShowTest < Minitest::Test
 
     files.each { |file|
       timestamp_str = file[0..-4]
-      subdir = File.join([0..3, 4..5].map{|r| timestamp_str[r]})
-      file = File.join(repo_path(@conf_ro), subdir, file)
+      file = timestamp_to_path(timestamp_str, repo_path(@conf_ro))
 
       cmd.execute([timestamp_str], @conf_ro)
 

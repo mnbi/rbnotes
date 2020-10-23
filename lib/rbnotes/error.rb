@@ -6,11 +6,32 @@ module Rbnotes
 
   # :stopdoc:
   module ErrMsg
-    NO_EDITOR = "No editor is available: %s"
-    PROGRAM_ABORT = "External program was aborted: %s"
+    MISSING_ARGUMENT  = "missing argument: %s"
+    MISSING_TIMESTAMP = "missing timestamp: %s"
+    NO_EDITOR         = "No editor is available: %s"
+    PROGRAM_ABORT     = "External program was aborted: %s"
   end
 
   # :startdoc:
+
+  ##
+  # An error raised if an essential argument was missing.
+  #
+  class MissingArgumentError < Error
+    def initialize(args)
+      super(ErrMsg::MISSING_ARGUMENT % args.to_s)
+    end
+  end
+
+  ##
+  # An error raised if a given timestamp was not found in the
+  # repository.
+  #
+  class MissingTimestampError < Error
+    def initialize(timestamp)
+      super(ErrMsg::MISSING_TIMESTAMP % timestamp)
+    end
+  end
 
   ##
   # An error raised if no external editor is available to edit a note,

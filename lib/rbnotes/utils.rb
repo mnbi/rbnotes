@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 require "pathname"
 require "tmpdir"
 
@@ -9,6 +7,26 @@ module Rbnotes
   # Rbnotes classes.
   #
   module Utils
+
+    ##
+    # Finds a external editor program which is specified with the
+    # argument, then returns the absolute path of the editor.  If the
+    # specified editor was not found, then search default editors in
+    # the command search paths (i.e. `ENV["PATH"]).  See also the
+    # document for `find_program`.
+    #
+    # The default editors to search in the search paths are:
+    #
+    # 1. ENV["EDITOR"]
+    # 2. "nano"
+    # 3. "vi"
+    #
+    # When all the default editors were not found, returns `nil`.
+    #
+    def find_editor(preferred_editor)
+      find_program([preferred_editor, ENV["EDITOR"], "nano", "vi"])
+    end
+    module_function :find_editor
 
     ##
     # Finds a executable program in given names.  When the executable
@@ -48,8 +66,20 @@ module Rbnotes
     # Executes the program with passing the given filename as argument.
     # The file will be created into `Dir.tmpdir`.
     #
-    def run_with_tmpfile(prog, filename)
+    # If initial_content is not nil, it must be an array of strings
+    # then it provides the initial content of a temporary file.
+    #
+    # :call-seq:
+    #     "/usr/bin/nano", "20201021131300.md", nil -> "/somewhere/tmpdir/20201021131300.md"
+    #     "/usr/bin/vi", "20201021131301.md", ["apple\n", "orange\n"] -> "/somewhere/tmpdir/20201021131301.md"
+    #
+    def run_with_tmpfile(prog, filename, initial_content = nil)
       tmpfile = File.expand_path(add_extension(filename), Dir.tmpdir)
+
+      unless initial_content.nil?
+        File.open(tmpfile, "w") {|f| f.print(initial_content.join("\n"))}
+      end
+
       rc = system(prog, tmpfile)
       raise ProgramAbortError, [prog, tmpfile] unless rc
       tmpfile

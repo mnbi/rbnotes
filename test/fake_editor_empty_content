@@ -1,5 +1,6 @@
 #!/bin/sh
 
+[ -e $1 ] && rm $1
 touch $1
 
 

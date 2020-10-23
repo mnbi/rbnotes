@@ -30,7 +30,8 @@ end
 app = App.new
 begin
   app.run(ARGV)
-rescue NoEditorError, ProgramAbortError => e
+rescue MissingArgumentError, MissingTimestampError,
+       NoEditorError, ProgramAbortError => e
   puts e.message
   exit 1
 end
