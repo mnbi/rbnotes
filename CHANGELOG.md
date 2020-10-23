@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
-## [0.1.4] - 2020-10-23
+## [0.2.0] - 2020-10-23
 ### Added
 - Add more commands (add/update/delete).
   - Add and update commands use a external editor to edit a note.
