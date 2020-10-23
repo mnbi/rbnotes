@@ -30,6 +30,13 @@ class RbnotesUtilsTest < Minitest::Test
     end
   end
 
+  def test_find_editor_finds_some_external_editor_in_other_case
+    result = Rbnotes::Utils.find_editor("/usr/local/bin/hoge_editor")
+    unless result.nil?
+      assert [ENV["EDITOR"], "nano", "vi"].include?(File.basename(result))
+    end
+  end
+
   # find_program(names)
   def test_find_program_can_find_sh_in_paths
     refute Rbnotes::Utils.find_program(["sh"]).nil?

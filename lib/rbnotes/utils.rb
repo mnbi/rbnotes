@@ -24,7 +24,7 @@ module Rbnotes
     # When all the default editors were not found, returns `nil`.
     #
     def find_editor(preferred_editor)
-      find_program([preferred_editor, ENV["EDITOR"], "nano", "vi"])
+      find_program([preferred_editor, ENV["EDITOR"], "nano", "vi"].compact)
     end
     module_function :find_editor
 
