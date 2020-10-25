@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.2.1] - 2020-10-25
+### Added
+- Add feature to load the configuration from an external file.
+- Add description about the configuration file in README.md
+
 ## [0.2.0] - 2020-10-23
 ### Added
 - Add more commands (add/update/delete).
