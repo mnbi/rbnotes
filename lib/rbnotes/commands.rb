@@ -31,6 +31,8 @@ module Rbnotes
 usage: rbnotes [command] [args]
 
 command:
+    add             : create a new note
+    update STAMP    : edit the note with external editor
     import FILE     : import a FILE into the repository
     list NUM        : list NUM notes
     show STAMP      : show the note specified with STAMP
