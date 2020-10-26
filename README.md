@@ -9,12 +9,16 @@ Rbnotes is a simple utility to write a note in the single repository.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'rbnotes, github: 'mnbi/rbnotes, branch: 'main'
+gem 'rbnotes'
 ```
 
 And then execute:
 
     $ bundle install
+
+Or install it yourself as:
+
+    $ gem install rbnotes
 
 ## Usage
 
