@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.2.2] - 2020-10-27
+###
+- Add feature to accept a timestamp pattern in `list` command. (#22)
+
 ## [0.2.1] - 2020-10-25
 ### Added
 - Add feature to load the configuration from an external file.

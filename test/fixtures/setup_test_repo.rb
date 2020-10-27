@@ -9,27 +9,29 @@ files = Dir.entries(SAMPLE_TEXT_DIR).filter_map { |e|
   e if FileTest.file?(e)
 }
 
-#                              yyyy  mo  dd  hh  mi  ss  sfx
-ye, mo, da, ho, mi, se, sfx = [2020, 10, 12, 0,  50, 0,  89]
-
-def min(x, y); x <= y ? x : y; end
-
-stamps = []
-1.upto(min(files.size, 60)) { |i|
-  stamps << Time.new(ye, mo, da, ho, mi, se + (i - 1))
-}
-
-files.each { |abspath|
-  t = stamps.shift
-  dirname = File.expand_path(t.strftime("%Y/%m"), repo_path)
-  basename = t.strftime("%Y%m%d%H%M%S")
-
-  dest = "#{dirname}/#{basename}#{File.extname(abspath)}"
-  dest_with_suffix =
-    "#{dirname}/#{basename}_#{"%03u" % sfx}#{File.extname(abspath)}"
-
-  FileUtils.mkdir_p(dirname)
-  [dest, dest_with_suffix].map { |d|
-    FileUtils.copy_file(abspath, d) unless FileTest.exist?(d) && FileUtils.cmp(abspath, d)
+def copy_text(texts, repo_path, ye, mo, da, ho, mi, se, sfx)
+  stamps = []
+  1.upto([texts.size, 60].min) { |i|
+    stamps << Time.new(ye, mo, da, ho, mi, se + (i - 1))
   }
-}
+
+  texts.each { |abspath|
+    t = stamps.shift
+    dirname = File.expand_path(t.strftime("%Y/%m"), repo_path)
+    basename = t.strftime("%Y%m%d%H%M%S")
+
+    dest = "#{dirname}/#{basename}#{File.extname(abspath)}"
+    dest_with_suffix =
+      "#{dirname}/#{basename}_#{"%03u" % sfx}#{File.extname(abspath)}"
+
+    FileUtils.mkdir_p(dirname)
+    [dest, dest_with_suffix].map { |d|
+      FileUtils.copy_file(abspath, d) unless FileTest.exist?(d) && FileUtils.cmp(abspath, d)
+    }
+  }
+end
+
+#                            yyyy  mo  dd  hh  mi  ss  sfx
+copy_text(files, repo_path, *[2020, 10, 12, 0,  50, 0,  89])
+copy_text(files, repo_path, *[2019, 10, 12, 0,  50, 0,  89])
+copy_text(files, repo_path, *[2020,  9, 12, 0,  50, 0,  89])

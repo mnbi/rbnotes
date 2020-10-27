@@ -47,10 +47,38 @@ class RbnotesCommandsListTest < Minitest::Test
     }
   end
 
+  def test_that_it_can_list_with_given_pattern
+    files = Dir.glob("#{repo_path(CONF_RO)}/**/*.md").map{|f| File.basename(f)}
+
+    result = execute(:list, ["20201012"], CONF_RO)
+
+    refute result.empty?
+    result.lines.each { |line|
+      timestamp_str = line[0, 18].rstrip
+      assert files.include?("#{timestamp_str}.md")
+    }
+  end
+
+  def test_that_it_can_list_with_year_only_pattern
+    pattern = "2019"
+    compare_entries_size("#{pattern}*.md", pattern)
+  end
+
+  def test_that_it_can_list_with_date_only_pattern
+    pattern = "1012"
+    compare_entries_size("*#{pattern}*.md", pattern)
+  end
+
   private
   def extract_subject(file)
     content = File.readlines(file)
     content[0]
+  end
+
+  def compare_entries_size(glob_pattern, pattern)
+    files = Dir.glob(File.join("#{repo_path(CONF_RO)}", "**", glob_pattern)).map{|f| File.basename(f)}
+    result = execute(:list, [pattern], CONF_RO)
+    assert_equal files.size, result.lines.size
   end
 end
 

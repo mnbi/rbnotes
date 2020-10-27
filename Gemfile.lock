@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rbnotes (0.2.1)
+    rbnotes (0.2.2)
       textrepo (~> 0.4)
       unicode-display_width (~> 1.7)
 
@@ -10,7 +10,7 @@ GEM
   specs:
     minitest (5.14.2)
     rake (13.0.1)
-    textrepo (0.4.2)
+    textrepo (0.4.3)
     unicode-display_width (1.7.0)
 
 PLATFORMS
