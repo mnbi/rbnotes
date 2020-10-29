@@ -44,6 +44,12 @@ class RbnotesCommandsImportTest < Minitest::Test
     assert FileUtils.identical?(src_file, expected)
   end
 
+  def test_it_fails_to_import_empty_text
+    src_file = File.expand_path(File.join("fixtures", "text", "empty.md"), __dir__)
+    result = execute(:import, [src_file], @conf_rw)
+    assert result.include?("empty")
+  end
+
   private
   def expected_path(org_file)
     st = File::Stat.new(org_file)

@@ -17,7 +17,7 @@ app = App.new
 begin
   app.run(ARGV)
 rescue MissingArgumentError, MissingTimestampError,
-       NoEditorError, ProgramAbortError => e
+       InvalidTimestampStringError, NoEditorError, ProgramAbortError => e
   puts e.message
   exit 1
 end

@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.3.0] - 2020-10-29
+### Added
+- Add feature to read argument from the standard input. (#27)
+
 ## [0.2.2] - 2020-10-27
-###
+### Added
 - Add feature to accept a timestamp pattern in `list` command. (#22)
 
 ## [0.2.1] - 2020-10-25

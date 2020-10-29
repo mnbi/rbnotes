@@ -54,11 +54,11 @@ module Rbnotes
     # Makes a headline with the timestamp and subject of the notes, it
     # looks like as follows:
     #
-    #   |<------------------ console column size --------------------->|
-    #   +-- timestamp ---+  +--- subject (the 1st line of each note) --+
-    #   |                |  |                                          |
-    #   20101010001000_123: # I love Macintosh.                        [EOL]
-    #   20100909090909_999: # This is very very long long loooong subje[EOL]
+    #   |<------------------ console column size ------------------->|
+    #   +-- timestamp ---+  +-  subject (the 1st line of each note) -+
+    #   |                |  |                                        |
+    #   20101010001000_123: I love Macintosh.                        [EOL]
+    #   20100909090909_999: This is very very long long loooong subje[EOL]
     #                     ++
     #                      ^--- delimiter (2 characters)
     #
@@ -69,9 +69,7 @@ module Rbnotes
       delimiter = ": "
       subject_width = column - TIMESTAMP_STR_MAX_WIDTH - delimiter.size - 1
 
-      subject = @repo.read(timestamp)[0]
-      prefix = '# '
-      subject = prefix + subject.lstrip if subject[0, 2] != prefix
+      subject = remove_heading_markup(@repo.read(timestamp)[0])
 
       ts_part = "#{timestamp.to_s}    "[0..(TIMESTAMP_STR_MAX_WIDTH - 1)] 
       sj_part = truncate_str(subject, subject_width)
@@ -88,6 +86,10 @@ module Rbnotes
         result << c
       }
       result
+    end
+
+    def remove_heading_markup(str)
+      str.sub(/^#+ +/, '')
     end
 
     # :startdoc:
