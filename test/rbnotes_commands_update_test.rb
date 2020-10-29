@@ -13,11 +13,9 @@ class RbnotesCommandsUpdateTest < Minitest::Test
     timestamp = "20201022000000"
     prepare_note(timestamp, ["Hello!"], repo_path(@conf_rw))
 
-    result = execute("update", [timestamp], @conf_rw)
+    result = execute(:update, [timestamp], @conf_rw)
 
-    # extract the new timestamp from the execution result
-    newstamp = /-> ([0-9]+)\]/.match(result).to_a[1]
-    dst_note_path = timestamp_to_path(newstamp, repo_path(@conf_rw))
+    dst_note_path = extract_note_path(result)
     assert FileTest.exist?(dst_note_path)
 
     # the following assertion depends on the `fake_editor` behavior
@@ -37,6 +35,25 @@ class RbnotesCommandsUpdateTest < Minitest::Test
 
     # `result` must contain a message which says it does nothing
     assert result.include?("Nothing is updated")
+  end
+
+  def test_that_it_reads_arg_from_stdin_when_no_args
+    timestamp_str = "20201029170000"
+    prepare_note(timestamp_str, ["# Do you read me?"], repo_path(@conf_rw))
+
+    $stdin = StringIO.new(timestamp_str)
+    result = execute(:update, [], @conf_rw)
+    $stdin = STDIN
+
+    dst_note_path = extract_note_path(result)
+    assert FileTest.exist?(dst_note_path)
+  end
+
+  private
+  # extract the new timestamp from the execution result
+  def extract_note_path(str)
+    timestamp_str = /-> ([0-9]+)\]/.match(str).to_a[1]
+    timestamp_to_path(timestamp_str, repo_path(@conf_rw))
   end
 
 end

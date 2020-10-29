@@ -24,4 +24,16 @@ class RbnotesCommandsShowTest < Minitest::Test
       assert FileUtils.identical?(file, @pager_out)
     }
   end
+
+  def test_that_it_reads_arg_from_stdin_when_no_args
+    timestamp_str = "20201012005001"
+    file = timestamp_to_path(timestamp_str, repo_path(@conf_ro))
+
+    cmd = load_cmd(:show)
+    $stdin = StringIO.new(timestamp_str)
+    cmd.execute([], @conf_ro)
+    $stdin = STDIN
+
+    assert FileUtils.identical?(file, @pager_out)
+  end
 end

@@ -19,7 +19,7 @@ module Rbnotes::Commands
   # as add command.
   #
   # If none of editors is available, the command fails.
-  #
+
   class Update < Command
     include ::Rbnotes::Utils
 
@@ -30,19 +30,10 @@ module Rbnotes::Commands
     #
     # :call-seq:
     #     "20201020112233" -> "20201021123400"
-    #
+
     def execute(args, conf)
-      raise Rbnotes::MissingArgumentError, args if args.size < 1
-
-      target_stamp = nil
-      begin
-        target_stamp = Textrepo::Timestamp.parse_s(args.shift)
-      rescue ArgumentError => e
-        raise Rbnotes::MissingArgumentError, args
-      end
-
+      target_stamp = Rbnotes::Utils.read_timestamp(args)
       editor = find_editor(conf[:editor])
-
       repo = Textrepo.init(conf)
 
       text = nil

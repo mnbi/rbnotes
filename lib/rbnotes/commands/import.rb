@@ -29,7 +29,7 @@ module Rbnotes
               puts "The note [%s] in the repository exactly matches" \
                    " the specified file." % stamp
               puts "It seems there is no need to import the file [%s]." % file
-              exit              # normal end
+              break
             else
               puts "The text in the repository does not match the" \
                    " specified file."
@@ -40,8 +40,8 @@ module Rbnotes
             end
           rescue Textrepo::EmptyTextError => _
             puts "... aborted."
-            puts "The specified file is empyt."
-            exit 1              # error
+            puts "The specified file is empty."
+            break
           end
         end
         if count > 999

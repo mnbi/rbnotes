@@ -16,6 +16,7 @@ def copy_text(texts, repo_path, ye, mo, da, ho, mi, se, sfx)
   }
 
   texts.each { |abspath|
+    next if FileTest.empty?(abspath)
     t = stamps.shift
     dirname = File.expand_path(t.strftime("%Y/%m"), repo_path)
     basename = t.strftime("%Y%m%d%H%M%S")

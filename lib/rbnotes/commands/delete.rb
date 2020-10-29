@@ -14,21 +14,17 @@
 module Rbnotes
   class Commands::Delete < Commands::Command
     def execute(args, conf)
-      stamp_str = args.shift
-      unless stamp_str.nil?
-        repo = Textrepo.init(conf)
-        begin
-          stamp = Textrepo::Timestamp.parse_s(stamp_str)
-          repo.delete(stamp)
-        rescue Textrepo::MissingTimestampError => e
-          puts e.message
-        rescue StandardError => e
-          puts e.message
-        else
-          puts "Delete [%s]" % stamp.to_s
-        end
+      stamp = Rbnotes::Utils.read_timestamp(args)
+
+      repo = Textrepo.init(conf)
+      begin
+        repo.delete(stamp)
+      rescue Textrepo::MissingTimestampError => e
+        puts e.message
+      rescue StandardError => e
+        puts e.message
       else
-        super
+        puts "Delete [%s]" % stamp.to_s
       end
     end
   end

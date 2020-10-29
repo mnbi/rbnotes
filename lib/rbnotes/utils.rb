@@ -86,6 +86,41 @@ module Rbnotes
     end
     module_function :run_with_tmpfile
 
+    ##
+    # Generates a Textrepo::Timestamp object from a String which comes
+    # from the command line arguments.  When no argument is given,
+    # then reads from STDIN.
+    #
+    # :call-seq:
+    #   read_timestamp(args) -> String
+
+    def read_timestamp(args)
+      str = args.shift || read_arg($stdin)
+      begin
+        Textrepo::Timestamp.parse_s(str)
+      rescue ArgumentError => _
+        raise InvalidTimestampStringError, str
+      end
+    end
+    module_function :read_timestamp
+
+    ##
+    # Reads an argument from the IO object.  Typically, it is intended
+    # to be used with STDIN.
+    #
+    # :call-seq:
+    #   read_arg(IO) -> String
+
+    def read_arg(io)
+      # assumes the reading line looks like:
+      #
+      #     foo bar baz ...
+      #
+      # then, only the first string is interested
+      io.gets.split(" ")[0]
+    end
+    module_function :read_arg
+
     # :stopdoc:
 
     private
