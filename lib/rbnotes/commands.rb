@@ -2,16 +2,20 @@ module Rbnotes
   ##
   # This module defines all command classes of rbnotes.  Each command
   # class must be derived from Rbnotes::Commands::Command class.
+
   module Commands
     ##
     # The base class for a command class.
+
     class Command
+
       ##
       # :call-seq:
-      #   Array, Hash -> nil
+      #   execute(Array, Hash) -> nil
+      #
       #   - Array: arguments for each command
       #   - Hash : rbnotes configuration
-      #
+
       def execute(args, conf)
         Builtins::DEFAULT_CMD.new.execute(args, conf)
       end
@@ -28,22 +32,38 @@ module Rbnotes
       class Help < Command
         def execute(_, _)
           puts <<USAGE
-usage: rbnotes [command] [args]
+usage: rbnotes [-c|--conf CONF_FILE] [command] [args]
 
 command:
-    add             : create a new note
-    update STAMP    : edit the note with external editor
-    import FILE     : import a FILE into the repository
-    list NUM        : list NUM notes
-    show STAMP      : show the note specified with STAMP
-    delete STAMP    : delete the note specified with STAMP
+    add            : create a new note
+    import FILE    : import a FILE into the repository
 
-    conf            : print the current configuraitons
-    repo            : print the repository path
-    stamp  TIME_STR : convert TIME_STR into a timestamp
-    time   STAMP    : convert STAMP into a time string
-    version         : print version
-    help            : show help
+    list PATTERN   : list notes those timestamp matches PATTERN
+
+    PATTERN must be:
+        (a) full qualified timestamp (with suffix): "20201030160200"
+        (b) year and date part: "20201030"
+        (c) year part only: "2020"
+        (d) date part only: "1030"
+
+    show STAMP     : show the note specified with STAMP
+    update STAMP   : edit the note with external editor
+    delete STAMP   : delete the note specified with STAMP
+
+    STAMP must be a sequence of digits to represent year, date and
+    time (and suffix), such "20201030160200" or "20201030160200_012".
+
+    show/update/delete reads its argument from the standard input when
+    no argument was passed in the command line.
+
+    version        : print version
+    help           : show help
+
+commands for development purpose:
+    conf           : print the current configuraitons
+    repo           : print the repository path
+    stamp TIME_STR : convert TIME_STR into a timestamp
+    time  STAMP    : convert STAMP into a time string
 USAGE
         end
       end
@@ -64,9 +84,9 @@ USAGE
 
           puts case type
                when :file_system
-                 "#{base}/#{name}"
+                 File.expand_path(name, base)
                else
-                 "#{base}/#{name}"
+                 File.join(base, name)
                end
         end
       end
@@ -113,15 +133,16 @@ USAGE
     # :startdoc:
 
     class << self
+
       ##
       # Loads a class to perfom the command, then returns an instance
       # of the class.
       #
       # :call-seq:
-      #   "import" -> an object of Rbnotes::Commnads::Import
-      #   "list"   -> an object of Rbnotes::Commands::List
-      #   "show"   -> an object of Rbnotes::Commands::Show
-      #
+      #   load("import") -> Rbnotes::Commnads::Import
+      #   load("list")   -> Rbnotes::Commands::List
+      #   load("show")   -> Rbnotes::Commands::Show
+
       def load(cmd_name)
         cmd_name ||= DEFAULT_CMD_NAME
         klass_name =  cmd_name.capitalize

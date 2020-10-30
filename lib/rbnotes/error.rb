@@ -9,7 +9,6 @@ module Rbnotes
   module ErrMsg
     MISSING_ARGUMENT  = "missing argument: %s"
     MISSING_TIMESTAMP = "missing timestamp: %s"
-    INVALID_TIMESTAMP_STRING = "invalid string as timestamp: %s"
     NO_EDITOR         = "No editor is available: %s"
     PROGRAM_ABORT     = "External program was aborted: %s"
   end
@@ -32,16 +31,6 @@ module Rbnotes
   class MissingTimestampError < Error
     def initialize(timestamp)
       super(ErrMsg::MISSING_TIMESTAMP % timestamp)
-    end
-  end
-
-  ##
-  # An error raised if an argument is invalid to convert a
-  # Textrepo::Timestamp object.
-
-  class InvalidTimestampStringError < Error
-    def initialize(str)
-      super(ErrMsg::INVALID_TIMESTAMP_STRING % str)
     end
   end
 

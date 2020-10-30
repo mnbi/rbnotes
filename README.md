@@ -28,6 +28,11 @@ General syntax is:
 rbnotes [global_opts] [command] [command_opts] [args]
 ```
 
+### Global options
+
+- "-c CONF_FILE", "--conf"
+  - specifies a configuration file
+
 ### Commands
 
 - import
@@ -57,6 +62,8 @@ Searches the configuration file in the following order:
 
 None of them is found, then the default configuration is used.
 
+The global option "-c CONF_FILE" will override the location.
+
 #### Content
 
 The format of the configuration file must be written in YAML.
@@ -75,13 +82,15 @@ A real example:
 
 ``` yaml
 ---
-:run_mode: :development
+:run_mode: :production
 :repository_type: :file_system
 :repository_name: "notes"
 :repository_base: "~"
-:pager: "bat"
+:pager: "bat -l md"
 :editor: "/usr/local/bin/emacsclient"
 ```
+
+The content is identical to `conf/config.yml`.
 
 #### Variables
 
@@ -124,8 +133,13 @@ the `:repository_name` value.  It would be:
 
 > :repository_base/:repository_name
 
-The value must be an absolute path.  The short-hand notation of the
-home directory ("~") is usable.
+The value is recommended to be an absolute path in the production
+time, since relative path will be expanded with the current working
+directory.  However, in the development and testing time, the relative
+path may be useful.  See `conf/config_deve.yml` or
+`conf/config_test.yml`.
+
+The short-hand notation of the home directory ("~") is usable.
 
 ##### Miscellaneous variables (optional)
 

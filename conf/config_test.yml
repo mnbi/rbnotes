@@ -1,0 +1,5 @@
+---
+:run_mode: :test
+:repository_type: :file_system
+:repository_name: "notes"
+:repository_base: "test/sandbox"
