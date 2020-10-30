@@ -17,7 +17,8 @@ app = App.new
 begin
   app.run(ARGV)
 rescue MissingArgumentError, MissingTimestampError,
-       InvalidTimestampStringError, NoEditorError, ProgramAbortError => e
+       NoEditorError, ProgramAbortError,
+       Textrepo::InvalidTimestampStringError => e
   puts e.message
   exit 1
 end

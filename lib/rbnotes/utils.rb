@@ -96,11 +96,7 @@ module Rbnotes
 
     def read_timestamp(args)
       str = args.shift || read_arg($stdin)
-      begin
-        Textrepo::Timestamp.parse_s(str)
-      rescue ArgumentError => _
-        raise InvalidTimestampStringError, str
-      end
+      Textrepo::Timestamp.parse_s(str)
     end
     module_function :read_timestamp
 
