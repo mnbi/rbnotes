@@ -1,0 +1,7 @@
+---
+:run_mode: :production
+:repository_type: :file_system
+:repository_name: "notes"
+:repository_base: "~"
+:pager: "bat -l md"
+:editor: "/usr/local/bin/emacsclient"

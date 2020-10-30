@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.3.1] - 2020-10-30
+### Added
+- Add feature to specify configuration file in the command line. (#21)
+
 ## [0.3.0] - 2020-10-29
 ### Added
 - Add feature to read argument from the standard input. (#27)

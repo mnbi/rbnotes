@@ -7,18 +7,45 @@ include Rbnotes
 DEBUG = true
 
 class App
+  def initialize
+    @gopts = {}
+  end
+
+  def options
+    @gopts
+  end
+
+  def parse_global_options(args)
+    while args.size > 0
+      arg = args.shift
+      case arg
+      when "-c", "--conf"
+        file = args.shift
+        raise ArgumentError, args.unshift(arg) if file.nil?
+        file = File.expand_path(file)
+        raise ArgumentError, "no such file: %s" % file unless FileTest.exist?(file) 
+        @gopts[:conf_file] = file
+      else
+        args.unshift(arg)
+        break
+      end
+    end
+  end
+
   def run(args)
     cmd = args.shift
-    Commands.load(cmd).execute(args, Rbnotes.conf)
+    Commands.load(cmd).execute(args, Rbnotes.conf(@gopts[:conf_file]))
   end
 end
 
 app = App.new
 begin
+  app.parse_global_options(ARGV)
   app.run(ARGV)
 rescue MissingArgumentError, MissingTimestampError,
        NoEditorError, ProgramAbortError,
-       Textrepo::InvalidTimestampStringError => e
+       Textrepo::InvalidTimestampStringError,
+       ArgumentError => e
   puts e.message
   exit 1
 end
