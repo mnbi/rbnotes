@@ -59,11 +59,19 @@ class RbnotesUtilsTest < Minitest::Test
 
   # run_with_tmpfile(prog, filename)
   def test_run_with_tmpfile_can_handle_a_tmpefile
-    tmpfile = File.expand_path("rbnotes_utils_test_run_with_tmpfile.txt", Dir.tmpdir)
+    tmpname = "rbnotes_utils_test_run_with_tmpfile"
     program = File.expand_path("fake_editor", __dir__)
-    rc = system(program, tmpfile)
+
+    tmpfile = Rbnotes::Utils.run_with_tmpfile(program, tmpname)
 
     @clean_files << tmpfile
-    assert rc && FileTest.exist?(tmpfile)
+    assert tmpfile && FileTest.exist?(tmpfile)
+  end
+
+  # read_arg(io)
+  def test_read_arg_returns_nil_when_reads_nil_from_io
+    nilio = StringIO.new
+    arg = Rbnotes::Utils.read_arg(nilio)
+    assert arg.nil?
   end
 end
