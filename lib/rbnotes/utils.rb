@@ -113,7 +113,11 @@ module Rbnotes
       #     foo bar baz ...
       #
       # then, only the first string is interested
-      io.gets.split(" ")[0]
+      begin
+        io.gets.split(" ")[0]
+      rescue NoMethodError => _
+        nil
+      end
     end
     module_function :read_arg
 
