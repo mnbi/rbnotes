@@ -44,7 +44,7 @@ module Rbnotes::Commands
       end
 
       tmpfile = run_with_tmpfile(editor, target_stamp.to_s, text)
-      text = File.readlines(tmpfile)
+      text = File.readlines(tmpfile, :chomp => true)
 
       unless text.empty?
         newstamp = nil
@@ -53,7 +53,7 @@ module Rbnotes::Commands
         rescue StandardError => e
           puts e.message
         else
-          puts "Update the note [%s -> %s]" % [target_stamp, newstamp]
+          puts "Update the note [%s -> %s]" % [target_stamp, newstamp] unless target_stamp == newstamp
         ensure
           # Don't forget to remove the temporary file.
           File.delete(tmpfile)
