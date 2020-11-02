@@ -31,7 +31,7 @@ class RbnotesCommandsUpdateTest < Minitest::Test
     timestamp = "20201022000001"
     prepare_note(timestamp, ["Hi!"], repo_path(conf))
 
-    result = execute("update", [timestamp], conf)
+    result = execute(:update, [timestamp], conf)
 
     # `result` must contain a message which says it does nothing
     assert result.include?("Nothing is updated")
@@ -47,6 +47,19 @@ class RbnotesCommandsUpdateTest < Minitest::Test
 
     dst_note_path = extract_note_path(result)
     assert FileTest.exist?(dst_note_path)
+  end
+
+  # issue #35
+  def test_it_does_not_update_for_the_same_content
+    conf = @conf_rw.dup
+    conf[:editor] = File.expand_path("fake_editor_do_nothing", __dir__)
+
+    timestamp_str = "20201102144900"
+    prepare_note(timestamp_str,
+                 ["# Sample note", "This is a sample."],
+                 repo_path(conf))
+    result = execute(:update, [timestamp_str], conf)
+    assert result.empty?
   end
 
   private

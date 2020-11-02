@@ -10,7 +10,7 @@ GEM
   specs:
     minitest (5.14.2)
     rake (13.0.1)
-    textrepo (0.4.5)
+    textrepo (0.5.1)
     unicode-display_width (1.7.0)
 
 PLATFORMS
