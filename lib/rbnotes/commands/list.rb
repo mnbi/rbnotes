@@ -24,6 +24,9 @@ module Rbnotes
     #   "20201027": specifies year and date
     #   - all Timestamps those have the same year and date would match
     #
+    #   "202011": specifies year and month
+    #   - all Timestamps those have the same year and month would match
+    #
     #   "2020": specifies year only
     #   - all Timestamps those have the same year would match
     #

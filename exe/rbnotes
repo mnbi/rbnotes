@@ -4,8 +4,6 @@ require "rbnotes"
 
 include Rbnotes
 
-DEBUG = true
-
 class App
   def initialize
     @gopts = {}
