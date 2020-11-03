@@ -114,7 +114,7 @@ module Rbnotes
       #
       # then, only the first string is interested
       begin
-        io.gets.split(" ")[0]
+        io.gets.split(":")[0].rstrip
       rescue NoMethodError => _
         nil
       end
