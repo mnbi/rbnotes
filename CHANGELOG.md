@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.4.1] - 2020-11-04
+### Added
+- Add a feature to accept a timestamp in `add` command. (#34)
+
 ## [0.4.0] - 2020-11-03
 ### Added
 - Add a new command `search` to perform full text search. (#33)
