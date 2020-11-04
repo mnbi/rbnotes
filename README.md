@@ -4,6 +4,9 @@
 
 Rbnotes is a simple utility to write a note in the single repository.
 
+This document provides the basic information to use rbnotes.
+You may find more useful information in [Wiki pages](https://github.com/mnbi/rbnotes/wiki).
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -39,6 +42,8 @@ rbnotes [global_opts] [command] [command_opts] [args]
   - imports existing files
 - list
   - lists notes in the repository with their timestamps and subject
+- search
+  - search a word (or words) in the repository
 - show
   - shows the content of a note
 - add
@@ -145,6 +150,38 @@ The short-hand notation of the home directory ("~") is usable.
 
 - :pager : specify a pager program
 - :editor : specify a editor program
+- :searcher: specify a program to perform search
+- :searcher_options: specify options to pass to the searcher program
+
+Be careful to set `:searcher` and `:searcher_options`. The searcher
+program must be expected to behave equivalent to `grep` with `-inRE`.
+At least, its output must be the same format and it must runs
+recursively to a directory.
+
+If your favorite searcher is one of the followings, see the default
+options which `textrepo` sets for those searchers.  In most cases, you
+don't have to set `:searcher_options` for them.
+
+| searcher | default options in `textrepo`                      |
+|:---------|:---------------------------------------------------|
+| `grep`   | `["-i", "-n", "-R", "-E"]`                         |
+| `egrep`  | `["-i", "-n", "-R"]`                               |
+| `ggrep`  | `["-i", "-n", "-R", "-E"]`                         |
+| `gegrep` | `["-i", "-n", "-R"]`                               |
+| `rg`     | `["-S", "-n", "--no-heading", "--color", "never"]` |
+
+Those searcher names are used in macOS (with Homebrew).  Any other OS
+might use different names.
+
+- `grep` and `egrep` -> BSD grep (macOS default)
+- `ggrep` and `gegrep` -> GNU grep
+- `rg` -> ripgrep
+
+If the name is different, `:searcher_options` should be set with the
+same value.  For example, if you system use the name `gnugrep` as GNU
+grep, and you want to use it as the searcher (that is, set `gnugrep`
+to `:searcher`), you should set `:searcher_options` value with `["-i",
+"-n", "-R", "-E"]`.
 
 ##### Default values for mandatory variables
 

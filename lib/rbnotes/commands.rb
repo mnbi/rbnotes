@@ -32,23 +32,36 @@ module Rbnotes
       class Help < Command
         def execute(_, _)
           puts <<USAGE
-usage: rbnotes [-c|--conf CONF_FILE] [command] [args]
+usage:
+    rbnotes [-c|--conf CONF_FILE] [command] [args]
+
+option:
+    -c, --conf [CONF_FILE] : specifiy the configuration file
+
+    CONF_FILE must be written in YAML.  To know about details of the
+    configuration file, see README.md or Wiki page.
 
 command:
     add            : create a new note
     import FILE    : import a FILE into the repository
 
-    list PATTERN   : list notes those timestamp matches PATTERN
+    list [STAMP_PATTERN] : list notes those timestamp matches PATTERN
+    search PATTERN [STAMP_PATTERN] : search PATTERN
 
-    PATTERN must be:
+    STAMP_PATTERN must be:
+
         (a) full qualified timestamp (with suffix): "20201030160200"
         (b) year and date part: "20201030"
-        (c) year part only: "2020"
-        (d) date part only: "1030"
+        (c) year and month part: "202010"
+        (d) year part only: "2020"
+        (e) date part only: "1030"
 
-    show STAMP     : show the note specified with STAMP
-    update STAMP   : edit the note with external editor
-    delete STAMP   : delete the note specified with STAMP
+    PATTERN is a word (or words) to search, it may also be a regular
+    expression.
+
+    show   [STAMP] : show the note specified with STAMP
+    update [STAMP] : edit the note with external editor
+    delete [STAMP] : delete the note specified with STAMP
 
     STAMP must be a sequence of digits to represent year, date and
     time (and suffix), such "20201030160200" or "20201030160200_012".
@@ -59,11 +72,15 @@ command:
     version        : print version
     help           : show help
 
-commands for development purpose:
+command for development:
     conf           : print the current configuraitons
     repo           : print the repository path
     stamp TIME_STR : convert TIME_STR into a timestamp
     time  STAMP    : convert STAMP into a time string
+
+For more information, see Wiki page.
+    - https://github.com/mnbi/rbnotes/wiki
+
 USAGE
         end
       end
