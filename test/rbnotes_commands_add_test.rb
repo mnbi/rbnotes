@@ -9,22 +9,59 @@ class RbnotesCommandsAddTest < Minitest::Test
   end
 
   def test_that_it_can_create_a_new_note
-    result = execute("add", [], @conf_rw)
-
-    timestamp = /[A-z ]+\[([0-9]+)\]/.match(result).to_a[1]
-    refute timestamp.nil?
-
-    note_path = timestamp_to_path(timestamp, repo_path(@conf_rw))
-    assert FileTest.exist?(note_path)
-
-    FileUtils.rm_f(note_path)   # prevent to fail other test for "add"
+    assert_success_to_add(nil, true)
   end
 
   def test_that_it_fails_to_crete_with_empty_content
     conf = @conf_rw.dup
     conf[:editor] = File.expand_path("fake_editor_empty_content", __dir__)
 
-    result = execute("add", [], conf)
+    result = execute(:add, [], conf)
     assert result.include?("empty text")
+  end
+
+  ##
+  # for `-t STAMP_PATTERN`
+
+  def test_it_accepts_stamp_pattern_full_qualified
+    assert_success_to_add("20201104170400", false)
+  end
+
+  def test_it_accepts_stamp_pattern_full_qualified_with_suffix
+    assert_success_to_add("20201104170400_012", false)
+  end
+
+  def test_it_accepts_stamp_pattern_omit_sec_part
+    assert_success_to_add("202011041705", false)
+  end
+
+  def test_it_accepts_stamp_pattern_omit_year_and_sec_part
+    assert_success_to_add("11041706", false)
+  end
+
+  def test_it_fails_with_nil_as_pattern
+    assert_raises(ArgumentError) {
+      execute(:add, ["-t"], @conf_rw)
+    }
+  end
+
+  def test_it_fails_with_invalid_stamp_pattern
+    assert_raises(Textrepo::InvalidTimestampStringError) {
+      execute(:add, ["-t", "ruby_birthday"], @conf_rw)
+    }
+  end
+
+  private
+  def assert_success_to_add(pattern = nil, cleanup = true)
+    args = pattern.nil? ? [] : ["-t", pattern]
+    result = execute(:add, args, @conf_rw)
+
+    stamp_str = /[A-z ]+\[([0-9_]+)\]/.match(result).to_a[1]
+    refute stamp_str.nil?
+
+    note_path = timestamp_to_path(stamp_str, repo_path(@conf_rw))
+    assert_path_exists note_path
+
+    FileUtils.rm_f(note_path) if cleanup
   end
 end
