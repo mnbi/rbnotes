@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.4.2] - 2020-11-05
+### Added
+- Add a feature to keep the timestamp in `update` command. (#44)
+
+### Changed
+- Fix issue #45: hanging up of `add` command.
+
 ## [0.4.1] - 2020-11-04
 ### Added
 - Add a feature to accept a timestamp in `add` command. (#34)

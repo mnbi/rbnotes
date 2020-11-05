@@ -41,6 +41,7 @@ module Rbnotes::Commands
           @opts[:timestamp] = Textrepo::Timestamp.parse_s(stamp_str)
         else
           args.unshift(arg)
+          break
         end
       end
 

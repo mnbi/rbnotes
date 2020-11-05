@@ -5,6 +5,9 @@ module Rbnotes::Commands
   # The timestamp associated with the note will be updated to new one,
   # which is generated while the command exection.
   #
+  # When "-k" (or "--keep") option is specified, the timestamp will
+  # remain unchanged.
+  #
   # A timestamp string must be specified as the only argument.  It
   # must exactly match to the one of the target note in the
   # repository.  When the given timestamp was not found, the command
@@ -32,6 +35,18 @@ module Rbnotes::Commands
     #     "20201020112233" -> "20201021123400"
 
     def execute(args, conf)
+      @opts = {}
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-k", "--keep"
+          @opts[:keep_timestamp] = true
+        else
+          args.unshift(arg)
+          break
+        end
+      end
+
       target_stamp = Rbnotes::Utils.read_timestamp(args)
       editor = find_editor(conf[:editor])
       repo = Textrepo.init(conf)
@@ -47,13 +62,18 @@ module Rbnotes::Commands
       text = File.readlines(tmpfile, :chomp => true)
 
       unless text.empty?
+        keep = @opts[:keep_timestamp] || false
         newstamp = nil
         begin
-          newstamp = repo.update(target_stamp, text)
+          newstamp = repo.update(target_stamp, text, keep)
         rescue StandardError => e
           puts e.message
         else
-          puts "Update the note [%s -> %s]" % [target_stamp, newstamp] unless target_stamp == newstamp
+          if keep
+            puts "Update the note content, the timestamp unchanged [%s]" % newstamp
+          else
+            puts "Update the note [%s -> %s]" % [target_stamp, newstamp] unless target_stamp == newstamp
+          end
         ensure
           # Don't forget to remove the temporary file.
           File.delete(tmpfile)
