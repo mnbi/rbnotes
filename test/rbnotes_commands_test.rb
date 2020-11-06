@@ -3,34 +3,25 @@ require "test_helper"
 class RbnotesCommandsTest < Minitest::Test
   include RbnotesTestUtils      # defined in test_helper.rb
   def test_that_it_can_load_a_command
-    cmd = load_cmd(Rbnotes::Commands.default_cmd_name)
+    cmd = load_cmd(Rbnotes::Commands::Builtins.default_cmd_name)
     refute cmd.nil?
   end
 
   def test_that_it_has_some_builtins
-    [:help, :version, :repo, :conf, :stamp, :time].each { |name|
+    [:usage, :version, :repo, :conf, :stamp, :time].each { |name|
       klass_name = name.to_s.capitalize
       klass = Rbnotes::Commands::Builtins.const_get(klass_name, false)
-      # klass.name will be like "Rbnotes::Commands::Builtins::Help"
+      # klass.name will be like "Rbnotes::Commands::Builtins::Usage"
       assert_equal klass_name, klass.name.split("::")[-1]
     }
   end
 
-  # Builtins::Help
-  def test_that_builtin_help_message_contains_abou_all_of_builtins
-    result = execute(:help, [], CONF_RW)
-    builtins = Rbnotes::Commands::Builtins.constants.map { |sym|
-      obj = Rbnotes::Commands::Builtins.const_get(sym)
-      if obj.instance_of?(Class) &&
-         obj.superclass == Rbnotes::Commands::Command
-        obj.to_s.split("::")[-1]
-      else
-        nil
-      end
-    }.compact
-
-    builtins.each { |sym|
-      assert result.include?(sym.to_s.downcase)
+  # Builtins::Usage
+  def test_that_builtin_usage_message_contains_some_of_commands
+    result = execute(:usage, [], CONF_RW)
+    commands = [:add, :delete, :import, :list, :search, :show, :update]
+    commands.each { |sym|
+      assert result.include?(sym.to_s)
     }
   end
 
