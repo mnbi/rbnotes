@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-Nothing to record here.
+- Add individual help for each command. (#42)
+
 
 ## [0.4.2] - 2020-11-05
 ### Added

@@ -3,7 +3,7 @@ require "test_helper"
 class RbnotesCommandsTest < Minitest::Test
   include RbnotesTestUtils      # defined in test_helper.rb
   def test_that_it_can_load_a_command
-    cmd = load_cmd(Rbnotes::Commands::DEFAULT_CMD_NAME)
+    cmd = load_cmd(Rbnotes::Commands.default_cmd_name)
     refute cmd.nil?
   end
 
