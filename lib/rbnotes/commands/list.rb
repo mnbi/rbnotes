@@ -1,15 +1,20 @@
 require "unicode/display_width"
 require "io/console/size"
 
-module Rbnotes
+module Rbnotes::Commands
+
   ##
   # Defines `list` command for `rbnotes`.  See the document of execute
   # method to know about the behavior of this command.
 
-  class Commands::List < Commands::Command
+  class List < Command
+
+    def description             # :nodoc:
+      "List notes"
+    end
 
     ##
-    # Shows the list of notes in the repository.  The only argument is
+    # Shows a list of notes in the repository.  The only argument is
     # optional.  If it passed, it must be an timestamp pattern.  A
     # timestamp is an instance of Textrepo::Timestamp class.  A
     # timestamp pattern is a string which would match several
@@ -46,6 +51,25 @@ module Rbnotes
       stamps.each { |timestamp|
         puts make_headline(timestamp)
       }
+    end
+
+    def help                    # :nodoc:
+      puts <<HELP
+usage:
+    #{Rbnotes::NAME} list [STAMP_PATTERN]
+
+Show a list of notes.  When no arguments, make a list with all notes
+in the repository.  When specified STAMP_PATTERN, only those match the
+pattern are listed.
+
+STAMP_PATTERN must be:
+
+    (a) full qualified timestamp (with suffix): "20201030160200"
+    (b) year and date part: "20201030"
+    (c) year and month part: "202010"
+    (d) year part only: "2020"
+    (e) date part only: "1030"
+HELP
     end
 
     # :stopdoc:

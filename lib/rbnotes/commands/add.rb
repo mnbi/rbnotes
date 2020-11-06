@@ -29,6 +29,10 @@ module Rbnotes::Commands
   class Add < Command
     include ::Rbnotes::Utils
 
+    def description             # :nodoc:
+      "Add a new note"
+    end
+
     def execute(args, conf)
       @opts = {}
       while args.size > 0
@@ -70,6 +74,36 @@ module Rbnotes::Commands
         # Don't forget to remove the temporary file.
         File.delete(tmpfile)
       end
+    end
+
+    def help                    # :nodoc:
+      puts <<HELP
+usage:
+    #{Rbnotes::NAME} add [(-t|--timestamp) STAMP_PATTERN]
+
+Add a new note to the repository.  If no options, a new timestamp is
+generated at the execution time, then it is attached to the note.
+
+Accept an option with `-t STAMP_PATTERN` (or `--timestamp`), a
+timestamp is generated according to `STAMP_PATTERN`.
+
+STAMP_PATTERN could be one of followings:
+
+    "20201104172230_078" : full qualified timestamp string
+    "20201104172230"     : full qualified timestamp string (no suffix)
+    "202011041722"       : year, date and time (omit second part)
+    "11041722"           : date and time (omit year and second part)
+
+This command starts the external editor program to prepare text to
+store.  The editor program will be searched in the following order:
+
+    1. configuration setting of ":editor"
+    2. ENV["EDITOR"]
+    3. "nano"
+    4. "vi"
+
+If none of the above editor is available, the execution fails.
+HELP
     end
 
     # :stopdoc:

@@ -23,6 +23,14 @@ class App
         file = File.expand_path(file)
         raise ArgumentError, "no such file: %s" % file unless FileTest.exist?(file) 
         @gopts[:conf_file] = file
+      when "-v", "--version"
+        args.clear
+        args.unshift("version")
+        break
+      when "-h", "--help"
+        args.clear
+        args.unshift("help")
+        break
       else
         args.unshift(arg)
         break

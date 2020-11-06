@@ -1,18 +1,17 @@
-# :markup: markdown
+module Rbnotes::Commands
 
-# Delete command deletes one note in the repository, which specified
-# with a given timestamp string.  The timestamp string must be a fully
-# qualified one, like "20201016165130".  The argument to specify a
-# note is mandatory.  If no argument was passed, it would print help
-# message and exit.
-#
-# It does nothing when the specified note does not exist except to
-# print error message.
+  # Deletes a given note in the repository.  The timestamp string must
+  # be a fully qualified one, like "20201016165130".  If no argument
+  # was passed, it would try to read from the standard input.
+  #
+  # It does nothing to change the repository when the specified note
+  # does not exist.
 
-# :stopdoc: 
+  class Delete < Command
+    def description             # :nodoc:
+      "Delete a note"
+    end
 
-module Rbnotes
-  class Commands::Delete < Commands::Command
     def execute(args, conf)
       stamp = Rbnotes::Utils.read_timestamp(args)
 
@@ -26,6 +25,19 @@ module Rbnotes
       else
         puts "Delete [%s]" % stamp.to_s
       end
+    end
+
+    def help                    # :nodoc:
+      puts <<HELP
+usage:
+    #{Rbnotes::NAME} delete [TIMESTAMP]
+
+Delete a given note.  TIMESTAMP must be a fully qualified one, such
+"20201016165130" or "20201016165130_012" if it has a suffix.
+
+Delete reads its argument from the standard input when no argument was
+passed in the command line.
+HELP
     end
   end
 end

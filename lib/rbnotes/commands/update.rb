@@ -1,35 +1,32 @@
 module Rbnotes::Commands
+
   ##
   # Updates the content of the note associated with given timestamp.
-  # Actual modification is done interactively by the external editor.
+  #
+  # Reads its argument from the standard input when no argument was
+  # passed in the command line.
+  #
   # The timestamp associated with the note will be updated to new one,
   # which is generated while the command exection.
   #
   # When "-k" (or "--keep") option is specified, the timestamp will
   # remain unchanged.
   #
-  # A timestamp string must be specified as the only argument.  It
-  # must exactly match to the one of the target note in the
-  # repository.  When the given timestamp was not found, the command
-  # fails.
+  # Actual modification is done interactively by the external editor.
   #
-  # Timestamp which is associated to the target note will be newly
-  # generated with the command execution time.  That is, the timestamp
-  # before the command exection will be obsolete.
-  #
-  # This command starts the external editor program to edit the
-  # content of the note.  The editor program will be searched as same
-  # as add command.
-  #
-  # If none of editors is available, the command fails.
+  # The editor program will be searched as same as add command.  If
+  # none of editors is available, the execution fails.
 
   class Update < Command
     include ::Rbnotes::Utils
 
+    def description             # :nodoc:
+      "Update the content of a note"
+    end
+
     ##
     # The 1st and only one argument is the timestamp to speficy the
-    # note to update.  Returns the new timestamp which is associated
-    # to the note updated.
+    # note to update.
     #
     # :call-seq:
     #     "20201020112233" -> "20201021123400"
@@ -81,6 +78,28 @@ module Rbnotes::Commands
       else
         puts "Nothing is updated, since the specified content is empty."
       end
+    end
+
+    def help                    # :nodoc:
+      puts <<HELP
+usage:
+    #{Rbnotes::NAME} update [TIMESTAMP]
+
+Updates the content of the note associated with given timestamp.
+
+Reads its argument from the standard input when no argument was passed
+in the command line.
+
+The timestamp associated with the note will be updated to new one,
+which is generated while the command exection.
+
+When "-k" (or "--keep") option is specified, the timestamp will remain
+unchanged.
+
+Actual modification is done interactively by the external editor.  The
+editor program will be searched as same as add command.  If none of
+editors is available, the execution fails.
+HELP
     end
   end
 end

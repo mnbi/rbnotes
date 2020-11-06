@@ -1,5 +1,29 @@
-module Rbnotes
-  class Commands::Import < Commands::Command
+module Rbnotes::Commands
+
+  ##
+  # Imports a existing file which specified by the argument as a note.
+  #
+  # A timestamp is generated referring to the birthtime of the given
+  # file.  If birthtime is not available on the system, use mtime
+  # (modification time).
+  #
+  # Occasionally, there is another note which has the same timestmap
+  # in the repository.  Then, tries to create a new timestamp with a
+  # suffix.  Unluckily, when such timestamp with a suffix already
+  # exists, tries to create a new one with increasing suffix.  Suffix
+  # will be "001", "002", ..., or "999".  In worst case, all suffix
+  # might have been already used.  Then, abandons to import.
+
+  class Import < Command
+
+    def description             # :nodoc:
+      "Import a file as a note"
+    end
+
+    ##
+    # :call-seq:
+    #     execute([PATHNAME], Rbnotes::Conf or Hash) -> nil
+
     def execute(args, conf)
       file = args.shift
       unless file.nil?
@@ -57,6 +81,19 @@ module Rbnotes
         puts "not supecified FILE"
         super
       end
+    end
+
+    def help                    # :nodoc:
+      puts <<HELP
+usage:
+    #{Rbnotes::NAME} import FILE
+
+Imports a existing file which specified by the argument as a note.
+
+A timestamp is generated referring to the birthtime of the given file.
+If birthtime is not available on the system, use mtime (modification
+time).
+HELP
     end
   end
 end
