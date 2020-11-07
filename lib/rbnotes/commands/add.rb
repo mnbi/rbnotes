@@ -56,6 +56,12 @@ module Rbnotes::Commands
       raise Rbnotes::NoEditorError, candidates if editor.nil?
 
       tmpfile = run_with_tmpfile(editor, stamp.to_s)
+
+      unless FileTest.exist?(tmpfile)
+        puts "Cancel adding, since nothing to store"
+        return
+      end
+
       text = File.readlines(tmpfile)
 
       repo = Textrepo.init(conf)

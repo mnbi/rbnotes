@@ -57,6 +57,15 @@ class RbnotesCommandsAddTest < Minitest::Test
     assert_success_to_add(result)
   end
 
+  # [issue #48]
+  def test_it_does_nothing_when_no_modification_in_the_editor
+    conf = @conf_rw.dup
+    conf[:editor] = File.expand_path("fake_editor_do_nothing", __dir__)
+    result = execute(:add, [], conf)
+    refute_empty result
+    assert_includes result, "Cancel"
+  end
+
   private
   def assert_success_to_add_with_timestamp(pattern = nil, cleanup = true)
     args = pattern.nil? ? [] : ["-t", pattern]
