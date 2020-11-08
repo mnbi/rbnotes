@@ -5,15 +5,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-- Fix `add` fails without modification (#48)
+Nothing to record here.
+
+## [0.4.3] - 2020-11-08
+### Added
+- Add a new command `export` to write out a note into a file (#51)
 - Add individual help for each command. (#42)
 
+### Fixed
+- Fix `add` fails without modification (#48)
 
 ## [0.4.2] - 2020-11-05
 ### Added
 - Add a feature to keep the timestamp in `update` command. (#44)
 
-### Changed
+### Fixed
 - Fix issue #45: hanging up of `add` command.
 
 ## [0.4.1] - 2020-11-04

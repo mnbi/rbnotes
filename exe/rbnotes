@@ -51,7 +51,8 @@ begin
 rescue MissingArgumentError, MissingTimestampError,
        NoEditorError, ProgramAbortError,
        Textrepo::InvalidTimestampStringError,
-       ArgumentError => e
+       ArgumentError,
+       Errno::EACCES => e
   puts e.message
   exit 1
 end
