@@ -59,6 +59,7 @@ Syntax:
 Example usage:
   #{Rbnotes::NAME} add [-t STAMP_PATTERN]
   #{Rbnotes::NAME} delete [TIMESTAMP]
+  #{Rbnotes::NAME} export [TIMESTAMP [FILENAME]]
   #{Rbnotes::NAME} import FILE
   #{Rbnotes::NAME} list [STAMP_PATTERN]
   #{Rbnotes::NAME} search PATTERN [STAMP_PATTERN]
@@ -255,6 +256,7 @@ TIME
       # :call-seq:
       #   load("add")    -> Rbnotes::Commands::Add
       #   load("delete") -> Rbnotes::Commands::Delete
+      #   load("export") -> Rbnotes::Commands::Export
       #   load("help")   -> Rbnotes::Commands::Help
       #   load("import") -> Rbnotes::Commnads::Import
       #   load("list")   -> Rbnotes::Commands::List
