@@ -7,7 +7,7 @@ FileUtils.mkdir_p(repo_path)
 files = Dir.entries(SAMPLE_TEXT_DIR).filter_map { |e|
   e = File.expand_path(e, SAMPLE_TEXT_DIR)
   e if FileTest.file?(e)
-}
+}.sort
 
 def copy_text(texts, repo_path, ye, mo, da, ho, mi, se, sfx)
   stamps = []
