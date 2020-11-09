@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.4.4] - 2020-11-09
+###
+- Add a feature to use a keyword as an argument for `list`. (#47)
+
 ## [0.4.3] - 2020-11-08
 ### Added
-- Add a new command `export` to write out a note into a file (#51)
+- Add a new command `export` to write out a note into a file. (#51)
 - Add individual help for each command. (#42)
 
 ### Fixed
