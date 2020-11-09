@@ -1,3 +1,4 @@
+require "date"
 require "unicode/display_width"
 require "io/console/size"
 
@@ -20,8 +21,7 @@ module Rbnotes::Commands
     # timestamp pattern is a string which would match several
     # Timestamp objects.
     #
-    # Here is
-    # several examples of timestamp patterns.
+    # Here is several examples of timestamp patterns.
     #
     #   "20201027093600_012": a complete string to represent a timestamp
     #   - this pattern would match exactly one Timestamp object
@@ -43,11 +43,28 @@ module Rbnotes::Commands
     #     execute(Array, Rbnotes::Conf or Hash) -> nil
 
     def execute(args, conf)
-      pattern = args.shift      # `nil` is acceptable
+      arg = args.shift
+      patterns = []
+
+      case arg.to_s
+      when "today", "to"
+        patterns << Textrepo::Timestamp.new(Time.now).to_s[0..7]
+      when "yesterday", "ye"
+        t = Time.now
+        patterns << Date.new(t.year, t.mon, t.day).prev_day.strftime("%Y%m%d")
+      when "this_week", "tw"
+        patterns.concat(dates_in_this_week)
+      when "last_week", "lw"
+        patterns.concat(dates_in_last_week)
+      else
+        patterns << arg
+      end
 
       @repo = Textrepo.init(conf)
+      stamps = patterns.map { |pat|
+        @repo.entries(pat).sort{|a, b| b <=> a}
+      }.flatten
       # newer stamp shoud be above
-      stamps = @repo.entries(pattern).sort{|a, b| b <=> a}
       stamps.each { |timestamp|
         puts make_headline(timestamp)
       }
@@ -56,11 +73,12 @@ module Rbnotes::Commands
     def help                    # :nodoc:
       puts <<HELP
 usage:
-    #{Rbnotes::NAME} list [STAMP_PATTERN]
+    #{Rbnotes::NAME} list [STAMP_PATTERN|KEYWORD]
 
 Show a list of notes.  When no arguments, make a list with all notes
 in the repository.  When specified STAMP_PATTERN, only those match the
-pattern are listed.
+pattern are listed.  Instead of STAMP_PATTERN, some KEYWORDs could be
+used.
 
 STAMP_PATTERN must be:
 
@@ -69,6 +87,14 @@ STAMP_PATTERN must be:
     (c) year and month part: "202010"
     (d) year part only: "2020"
     (e) date part only: "1030"
+
+KEYWORD:
+
+    - "today"      (or "to")
+    - "yeasterday" (or "ye")
+    - "this_week"  (or "tw")
+    - "last_week"  (or "lw")
+
 HELP
     end
 
@@ -117,6 +143,29 @@ HELP
 
     def remove_heading_markup(str)
       str.sub(/^#+ +/, '')
+    end
+
+    # week day for Monday start calendar
+    def wday(time)
+      (time.wday - 1) % 7
+    end
+
+    def dates_in_this_week
+      to = Time.now
+      start = Date.new(to.year, to.mon, to.day).prev_day(wday(to))
+      dates_in_week(start)
+    end
+
+    def dates_in_last_week
+      to = Time.now
+      start_of_this_week = Date.new(to.year, to.mon, to.day).prev_day(wday(to))
+      dates_in_week(start_of_this_week.prev_day(7))
+    end
+
+    def dates_in_week(start_date)
+      dates = [start_date]
+      1.upto(6) { |i| dates << start_date.next_day(i) }
+      dates.map { |d| d.strftime("%Y%m%d") }
     end
 
     # :startdoc:

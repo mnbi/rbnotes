@@ -61,7 +61,7 @@ Example usage:
   #{Rbnotes::NAME} delete [TIMESTAMP]
   #{Rbnotes::NAME} export [TIMESTAMP [FILENAME]]
   #{Rbnotes::NAME} import FILE
-  #{Rbnotes::NAME} list [STAMP_PATTERN]
+  #{Rbnotes::NAME} list [STAMP_PATTERN|KEYWORD]
   #{Rbnotes::NAME} search PATTERN [STAMP_PATTERN]
   #{Rbnotes::NAME} show [TIMESTAMP]
   #{Rbnotes::NAME} update [TIMESTAMP]
