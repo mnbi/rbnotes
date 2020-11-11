@@ -164,10 +164,10 @@ don't have to set `:searcher_options` for them.
 
 | searcher | default options in `textrepo`                      |
 |:---------|:---------------------------------------------------|
-| `grep`   | `["-i", "-n", "-R", "-E"]`                         |
-| `egrep`  | `["-i", "-n", "-R"]`                               |
-| `ggrep`  | `["-i", "-n", "-R", "-E"]`                         |
-| `gegrep` | `["-i", "-n", "-R"]`                               |
+| `grep`   | `["-i", "-n", "-H", "-R", "-E"]`                   |
+| `egrep`  | `["-i", "-n", "-H", "-R"]`                         |
+| `ggrep`  | `["-i", "-n", "-H", "-R", "-E"]`                   |
+| `gegrep` | `["-i", "-n", "-H", "-R"]`                         |
 | `rg`     | `["-S", "-n", "--no-heading", "--color", "never"]` |
 
 Those searcher names are used in macOS (with Homebrew).  Any other OS
