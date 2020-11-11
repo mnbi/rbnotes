@@ -7,7 +7,7 @@ class RbnotesCommandsListTest < Minitest::Test
 
   def setup
     @conf_rw = CONF_RW.dup
-    @conf_rw[:repository_name] = "test_repo_list"
+    @conf_rw[:repository_name] = "repo_list_test"
   end
 
   def test_that_it_can_list_up_all_notes
@@ -137,6 +137,22 @@ class RbnotesCommandsListTest < Minitest::Test
     last_week_stamp_patterns.each {|pat|
       assert result.include?(pat)
     }
+  end
+
+  # [issue #54]
+  def test_it_sorts_correctly_with_keyword_this_week
+    conf = @conf_rw.dup
+    conf[:repository_name] = "repo_list_keyword_sort"
+    keyword = "this_week"
+    stamp_patterns = this_week_stamp_patterns
+    stamp_patterns.sort{|a, b| a <=> b}.each { |pat|
+      stamp = "#{pat}090909"
+      text = ["#{stamp}:sort for #{keyword}"]
+      prepare_note(stamp, text, repo_path(conf))
+    }
+    result = execute(:list, [keyword], conf)
+    result_patterns = result.lines(chomp: true).map {|l| l[0, 8]}
+    assert_equal stamp_patterns.sort{|a, b| b <=> a}, result_patterns
   end
 
   private

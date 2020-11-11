@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-Nothing to record here.
+- Fix issue #54: Notes list does not sort correctly.
 
 ## [0.4.4] - 2020-11-09
 ###
