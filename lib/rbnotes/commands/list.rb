@@ -62,8 +62,8 @@ module Rbnotes::Commands
 
       @repo = Textrepo.init(conf)
       stamps = patterns.map { |pat|
-        @repo.entries(pat).sort{|a, b| b <=> a}
-      }.flatten
+        @repo.entries(pat)
+      }.flatten.sort{|a, b| b <=> a}
       # newer stamp shoud be above
       stamps.each { |timestamp|
         puts make_headline(timestamp)
