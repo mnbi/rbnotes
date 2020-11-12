@@ -155,6 +155,19 @@ class RbnotesCommandsListTest < Minitest::Test
     assert_equal stamp_patterns.sort{|a, b| b <=> a}, result_patterns
   end
 
+  # [issue #57] modify to accept multiple args
+  def test_it_accepts_multiple_args_as_timestamp_pattern
+    patterns = ["20191012", "0912", "1012"]
+    expected = patterns.map { |p|
+      files = []
+      Dir.glob("**/*#{p}*.md", base: repo_path(CONF_RO)) { |f| files << f }
+      files
+    }.flatten.sort.uniq.size
+
+    result = execute(:list, patterns, CONF_RO)
+    assert_equal expected, result.lines.size
+  end
+
   private
   def extract_subject(file)
     content = File.readlines(file)

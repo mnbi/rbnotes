@@ -15,11 +15,23 @@ module Rbnotes::Commands
     end
 
     ##
-    # Shows a list of notes in the repository.  The only argument is
-    # optional.  If it passed, it must be an timestamp pattern.  A
-    # timestamp is an instance of Textrepo::Timestamp class.  A
-    # timestamp pattern is a string which would match several
-    # Timestamp objects.
+    # Shows a list of notes in the repository.  Arguments are
+    # optional.  If several args are passed, each of them must be a
+    # timestamp pattern or a keyword.
+    #
+    # Any order of timestamp patterns and keywords mixture is
+    # acceptable.  The redundant patterns are just ignored.
+    #
+    # A timestamp pattern is a string which would match several
+    # Timestamp objects.  A timestamp is an instance of
+    # Textrepo::Timestamp class.
+    #
+    # A keyword must be one of them:
+    #
+    # - "today"      (or "to")
+    # - "yeasterday" (or "ye")
+    # - "this_week"  (or "tw")
+    # - "last_week"  (or "lw")
     #
     # Here is several examples of timestamp patterns.
     #
@@ -43,28 +55,13 @@ module Rbnotes::Commands
     #     execute(Array, Rbnotes::Conf or Hash) -> nil
 
     def execute(args, conf)
-      arg = args.shift
-      patterns = []
-
-      case arg.to_s
-      when "today", "to"
-        patterns << Textrepo::Timestamp.new(Time.now).to_s[0..7]
-      when "yesterday", "ye"
-        t = Time.now
-        patterns << Date.new(t.year, t.mon, t.day).prev_day.strftime("%Y%m%d")
-      when "this_week", "tw"
-        patterns.concat(dates_in_this_week)
-      when "last_week", "lw"
-        patterns.concat(dates_in_last_week)
-      else
-        patterns << arg
-      end
+      patterns = args.size > 0 ? convert_keyword(args) : [nil]
 
       @repo = Textrepo.init(conf)
+      # newer stamp shoud be above
       stamps = patterns.map { |pat|
         @repo.entries(pat)
-      }.flatten.sort{|a, b| b <=> a}
-      # newer stamp shoud be above
+      }.flatten.sort{|a, b| b <=> a}.uniq
       stamps.each { |timestamp|
         puts make_headline(timestamp)
       }
@@ -143,6 +140,27 @@ HELP
 
     def remove_heading_markup(str)
       str.sub(/^#+ +/, '')
+    end
+
+    def convert_keyword(args)
+      patterns = []
+      while args.size > 0
+        arg = args.shift
+        case arg.to_s
+        when "today", "to"
+          patterns << Textrepo::Timestamp.new(Time.now).to_s[0..7]
+        when "yesterday", "ye"
+          t = Time.now
+          patterns << Date.new(t.year, t.mon, t.day).prev_day.strftime("%Y%m%d")
+        when "this_week", "tw"
+          patterns.concat(dates_in_this_week)
+        when "last_week", "lw"
+          patterns.concat(dates_in_last_week)
+        else
+          patterns << arg
+        end
+      end
+      patterns.sort!.uniq
     end
 
     # week day for Monday start calendar
