@@ -5,10 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+Nothing to record here.
+
+## [0.4.5] - 2020-11-12
+### Changed
+- Add a feature to accept multiple args for `list`. (#57)
+
+### Fixed
 - Fix issue #54: Notes list does not sort correctly.
 
 ## [0.4.4] - 2020-11-09
-###
+### Changed
 - Add a feature to use a keyword as an argument for `list`. (#47)
 
 ## [0.4.3] - 2020-11-08
@@ -20,14 +27,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Fix `add` fails without modification (#48)
 
 ## [0.4.2] - 2020-11-05
-### Added
+### Changed
 - Add a feature to keep the timestamp in `update` command. (#44)
 
 ### Fixed
 - Fix issue #45: hanging up of `add` command.
 
 ## [0.4.1] - 2020-11-04
-### Added
+### Changed
 - Add a feature to accept a timestamp in `add` command. (#34)
 
 ## [0.4.0] - 2020-11-03
@@ -36,20 +43,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.3.1] - 2020-10-30
 ### Added
-- Add feature to specify configuration file in the command line. (#21)
+- Add a feature to specify configuration file in the command
+  line. (#21)
 
 ## [0.3.0] - 2020-10-29
-### Added
+### Changed
 - Add feature to read argument from the standard input. (#27)
 
 ## [0.2.2] - 2020-10-27
-### Added
-- Add feature to accept a timestamp pattern in `list` command. (#22)
+### Changed
+- Add a feature to accept a timestamp pattern in `list` command. (#22)
 
 ## [0.2.1] - 2020-10-25
 ### Added
-- Add feature to load the configuration from an external file.
-- Add description about the configuration file in README.md
+- Add a feature to load the configuration from an external file.
+  - Add a description about the configuration file in README.md.
 
 ## [0.2.0] - 2020-10-23
 ### Added
@@ -59,15 +67,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Add a new task into `Rakefile` to generate RI docs.
   - The intention of the task is to verify RI docs.
 
-### Fixed
+### Changed
 - Refactor some tests.
 
 ## [0.1.3] - 2020-10-15
-### Fixed
+### Changed
 - Add help text for the `conf` command.
 
 ## [0.1.2] - 2020-10-15
-### Fixed
+### Changed
 - Adapt the API change in `textrepo` (0.4.0).
 
 ## [0.1.0] - 2020-10-12
