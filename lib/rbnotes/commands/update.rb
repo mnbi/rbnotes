@@ -18,7 +18,6 @@ module Rbnotes::Commands
   # none of editors is available, the execution fails.
 
   class Update < Command
-    include ::Rbnotes::Utils
 
     def description             # :nodoc:
       "Update the content of a note"
@@ -44,8 +43,8 @@ module Rbnotes::Commands
         end
       end
 
-      target_stamp = Rbnotes::Utils.read_timestamp(args)
-      editor = find_editor(conf[:editor])
+      target_stamp = Rbnotes.utils.read_timestamp(args)
+      editor = Rbnotes.utils.find_editor(conf[:editor])
       repo = Textrepo.init(conf)
 
       text = nil
@@ -55,7 +54,7 @@ module Rbnotes::Commands
         raise Rbnotes::MissingTimestampError, target_stamp
       end
 
-      tmpfile = run_with_tmpfile(editor, target_stamp.to_s, text)
+      tmpfile = Rbnotes.utils.run_with_tmpfile(editor, target_stamp.to_s, text)
       text = File.readlines(tmpfile, :chomp => true)
 
       unless text.empty?

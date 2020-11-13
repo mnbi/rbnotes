@@ -4,4 +4,5 @@
 :repository_name: "notes"
 :repository_base: "~"
 :pager: "bat -l md"
+:picker: "fzf"
 :editor: "/usr/local/bin/emacsclient"

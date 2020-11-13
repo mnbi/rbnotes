@@ -21,7 +21,7 @@ module Rbnotes::Commands
     #     execute([a String as timestring], Rbnotes::Conf or Hash) -> nil
 
     def execute(args, conf)
-      stamp = Rbnotes::Utils.read_timestamp(args)
+      stamp = Rbnotes.utils.read_timestamp(args)
 
       repo = Textrepo.init(conf)
       begin

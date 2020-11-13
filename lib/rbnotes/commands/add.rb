@@ -27,7 +27,6 @@ module Rbnotes::Commands
   # If none of the above editor is available, the command fails.
 
   class Add < Command
-    include ::Rbnotes::Utils
 
     def description             # :nodoc:
       "Add a new note"
@@ -52,10 +51,10 @@ module Rbnotes::Commands
       stamp = @opts[:timestamp] || Textrepo::Timestamp.new(Time.now)
 
       candidates = [conf[:editor], ENV["EDITOR"], "nano", "vi"].compact
-      editor = find_program(candidates)
+      editor = Rbnotes.utils.find_program(candidates)
       raise Rbnotes::NoEditorError, candidates if editor.nil?
 
-      tmpfile = run_with_tmpfile(editor, stamp.to_s)
+      tmpfile = Rbnotes.utils.run_with_tmpfile(editor, stamp.to_s)
 
       unless FileTest.exist?(tmpfile)
         puts "Cancel adding, since nothing to store"

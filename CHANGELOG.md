@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.4.6] - 2020-11-13
+### Added
+- Add a new command `pick` to select a note with picker program. (#59)
+
 ## [0.4.5] - 2020-11-12
 ### Changed
 - Add a feature to accept multiple args for `list`. (#57)

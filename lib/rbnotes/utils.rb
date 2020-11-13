@@ -1,12 +1,18 @@
+require "singleton"
 require "pathname"
 require "tmpdir"
+require "date"
+require "io/console/size"
+
+require "unicode/display_width"
 
 module Rbnotes
   ##
   # Defines several utility methods those are intended to be used in
   # Rbnotes classes.
   #
-  module Utils
+  class Utils
+    include Singleton
 
     ##
     # Finds a external editor program which is specified with the
@@ -26,7 +32,6 @@ module Rbnotes
     def find_editor(preferred_editor)
       find_program([preferred_editor, ENV["EDITOR"], "nano", "vi"].compact)
     end
-    module_function :find_editor
 
     ##
     # Finds a executable program in given names.  When the executable
@@ -60,7 +65,6 @@ module Rbnotes
       }
       nil
     end
-    module_function :find_program
 
     ##
     # Executes the program with passing the given filename as argument.
@@ -84,7 +88,6 @@ module Rbnotes
       raise ProgramAbortError, [prog, tmpfile] unless rc
       tmpfile
     end
-    module_function :run_with_tmpfile
 
     ##
     # Generates a Textrepo::Timestamp object from a String which comes
@@ -98,7 +101,6 @@ module Rbnotes
       str = args.shift || read_arg($stdin)
       Textrepo::Timestamp.parse_s(str)
     end
-    module_function :read_timestamp
 
     ##
     # Reads an argument from the IO object.  Typically, it is intended
@@ -119,7 +121,110 @@ module Rbnotes
         nil
       end
     end
-    module_function :read_arg
+
+    ##
+    # Parses the given arguments and expand keywords if found.  Each
+    # of the arguments is assumed to represent a timestamp pattern (or
+    # a keyword to be expand into several timestamp pattern).  Returns
+    # an Array of timestamp partterns (each pattern is a String
+    # object).
+    #
+    # A timestamp pattern looks like:
+    #
+    #   (a) full qualified timestamp (with suffix): "20201030160200"
+    #   (b) year and date part: "20201030"
+    #   (c) year and month part: "202010"
+    #   (d) year part only: "2020"
+    #   (e) date part only: "1030"
+    #
+    # KEYWORD:
+    #
+    #   - "today"      (or "to")
+    #   - "yeasterday" (or "ye")
+    #   - "this_week"  (or "tw")
+    #   - "last_week"  (or "lw")
+    #
+    # :call-seq:
+    #   expand_keyword_in_args(Array of Strings) -> Array of Strings
+
+    def expand_keyword_in_args(args)
+      return [nil] if args.empty?
+
+      patterns = []
+      while args.size > 0
+        arg = args.shift
+        if ["today", "to", "yesterday", "ye",
+            "this_week", "tw", "last_week", "lw"].include?(arg)
+          patterns.concat(Rbnotes.utils.expand_keyword(arg))
+        else
+          patterns << arg
+        end
+      end
+      patterns.sort.uniq
+    end
+
+    ##
+    # Expands a keyword to timestamp strings.
+    #
+    # :call-seq:
+    #     expand_keyword(keyword as String) -> Array of timestamp Strings
+
+    def expand_keyword(keyword)
+      patterns = []
+      case keyword
+      when "today", "to"
+        patterns << timestamp_pattern(date_of_today)
+      when "yesterday", "ye"
+        patterns << timestamp_pattern(date_of_yesterday)
+      when "this_week", "tw"
+        patterns.concat(dates_in_this_week.map { |d| timestamp_pattern(d) })
+      when "last_week", "lw"
+        patterns.concat(dates_in_last_week.map { |d| timestamp_pattern(d) })
+      else
+        raise UnknownKeywordError, keyword
+      end
+      patterns
+    end
+
+    ##
+    # Makes a headline with the timestamp and subject of the notes, it
+    # looks like as follows:
+    #
+    #   |<------------------ console column size ------------------->|
+    #   +-- timestamp ---+  +-  subject (the 1st line of each note) -+
+    #   |                |  |                                        |
+    #   20101010001000_123: I love Macintosh.                        [EOL]
+    #   20100909090909_999: This is very very long long loooong subje[EOL]
+    #                     ++
+    #                      ^--- delimiter (2 characters)
+    #
+    # The subject part will truncate when it is long.
+
+    def make_headline(timestamp, text)
+      _, column = IO.console_size
+      delimiter = ": "
+      subject_width = column - TIMESTAMP_STR_MAX_WIDTH - delimiter.size - 1
+
+      subject = remove_heading_markup(text[0])
+
+      ts_part = "#{timestamp.to_s}    "[0..(TIMESTAMP_STR_MAX_WIDTH - 1)] 
+      sj_part = truncate_str(subject, subject_width)
+
+      ts_part + delimiter + sj_part
+    end
+
+    ##
+    # Finds all notes those timestamps match to given patterns in the
+    # given repository.  Returns an Array contains Timestamp objects.
+    #
+    # :call-seq:
+    #     find_notes(Array of timestamp patterns, Textrepo::Repository)
+
+    def find_notes(timestamp_patterns, repo)
+      timestamp_patterns.map { |pat|
+        repo.entries(pat)
+      }.flatten.sort{ |a, b| b <=> a }.uniq
+    end
 
     # :stopdoc:
 
@@ -132,11 +237,72 @@ module Rbnotes
       }
       found.compact[0]
     end
-    module_function :search_in_path
 
     def add_extension(basename)
       "#{basename}.md"
     end
-    module_function :add_extension
+
+    def timestamp_pattern(date)
+      date.strftime("%Y%m%d")
+    end
+
+    def date_of_today
+      date(Time.now)
+    end
+
+    def date_of_yesterday
+      date(Time.now).prev_day
+    end
+
+    def date(time)
+      Date.new(time.year, time.mon, time.day)
+    end
+
+    def dates_in_this_week
+      dates_in_week(start_date_in_this_week)
+    end
+
+    def dates_in_last_week
+      dates_in_week(start_date_in_last_week)
+    end
+
+    def start_date_in_this_week
+      today = Time.now
+      Date.new(today.year, today.mon, today.day).prev_day(wday(today))
+    end
+
+    def start_date_in_last_week
+      start_date_in_this_week.prev_day(7)
+    end
+
+    def wday(time)
+      (time.wday - 1) % 7
+    end
+
+    def dates_in_week(start_date)
+      dates = [start_date]
+      1.upto(6) { |i| dates << start_date.next_day(i) }
+      dates
+    end
+
+    TIMESTAMP_STR_MAX_WIDTH = "yyyymoddhhmiss_sfx".size
+
+    def truncate_str(str, size)
+      count = 0
+      result = ""
+      str.each_char { |c|
+        count += Unicode::DisplayWidth.of(c)
+        break if count > size
+        result << c
+      }
+      result
+    end
+
+    def remove_heading_markup(str)
+      str.sub(/^#+ +/, '')
+    end
+
+    # :startdoc:
+
   end
 end

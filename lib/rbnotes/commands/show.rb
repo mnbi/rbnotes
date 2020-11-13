@@ -19,7 +19,7 @@ module Rbnotes::Commands
     end
 
     def execute(args, conf)
-      stamp = Rbnotes::Utils.read_timestamp(args)
+      stamp = Rbnotes.utils.read_timestamp(args)
 
       repo = Textrepo.init(conf)
       content = repo.read(stamp)
