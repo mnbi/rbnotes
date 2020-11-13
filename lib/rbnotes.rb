@@ -8,4 +8,10 @@ module Rbnotes
   require_relative "rbnotes/conf"
   require_relative "rbnotes/utils"
   require_relative "rbnotes/commands"
+
+  class << self
+    def utils
+      Utils.instance
+    end
+  end
 end

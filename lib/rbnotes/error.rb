@@ -11,6 +11,7 @@ module Rbnotes
     MISSING_TIMESTAMP = "missing timestamp: %s"
     NO_EDITOR         = "No editor is available: %s"
     PROGRAM_ABORT     = "External program was aborted: %s"
+    UNKNOWN_KEYWORD   = "Unknown keyword: %s"
   end
 
   # :startdoc:
@@ -51,6 +52,16 @@ module Rbnotes
   class ProgramAbortError < Error
     def initialize(cmdline)
       super(ErrMsg::PROGRAM_ABORT % cmdline.join(" "))
+    end
+  end
+
+  ##
+  # An eeror raised when an unknown keyword was specified as a
+  # timestamp string pattern.
+
+  class UnknownKeywordError < Error
+    def initialize(keyword)
+      super(ErrMsg::UNKNOWN_KEYWORD % keyword)
     end
   end
 end
