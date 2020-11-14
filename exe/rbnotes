@@ -48,6 +48,11 @@ app = App.new
 begin
   app.parse_global_options(ARGV)
   app.run(ARGV)
+rescue Errno::EPIPE => e
+  # Fix issue #61: When the pipeline which rbnotes connects is
+  # discarded by the other program, the execption was raised.  It does
+  # not end abnormally for rbnotes.  So, just ignores the exception.
+  exit 0
 rescue MissingArgumentError, MissingTimestampError,
        NoEditorError, ProgramAbortError,
        Textrepo::InvalidTimestampStringError,
