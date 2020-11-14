@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-Nothing to record here.
+- Fix issue #61: `list` command fails in pipeline.
 
 ## [0.4.6] - 2020-11-13
 ### Added
