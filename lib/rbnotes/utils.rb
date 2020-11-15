@@ -203,11 +203,12 @@ module Rbnotes
     def make_headline(timestamp, text)
       _, column = IO.console_size
       delimiter = ": "
-      subject_width = column - TIMESTAMP_STR_MAX_WIDTH - delimiter.size - 1
+      timestamp_width = timestamp.to_s.size
+      subject_width = column - timestamp_width - delimiter.size - 1
 
       subject = remove_heading_markup(text[0])
 
-      ts_part = "#{timestamp.to_s}    "[0..(TIMESTAMP_STR_MAX_WIDTH - 1)] 
+      ts_part = "#{timestamp.to_s}    "[0..(timestamp_width - 1)]
       sj_part = truncate_str(subject, subject_width)
 
       ts_part + delimiter + sj_part
@@ -284,8 +285,6 @@ module Rbnotes
       1.upto(6) { |i| dates << start_date.next_day(i) }
       dates
     end
-
-    TIMESTAMP_STR_MAX_WIDTH = "yyyymoddhhmiss_sfx".size
 
     def truncate_str(str, size)
       count = 0

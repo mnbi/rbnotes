@@ -39,11 +39,8 @@ module Rbnotes::Commands
         result = repo.search(pattern, timestamp_pattern)
       rescue Textrepo::InvalidSearchResultError => e
         puts e.message
-      else
-        result.each { |stamp, num, match|
-          puts "#{stamp}:#{num}:#{match}"
-        }
       end
+      print_search_result(result.map{ |e| SearchEntry.new(*e) })
     end
 
     def help                    # :nodoc:
@@ -63,5 +60,47 @@ STAMP_PATTERN must be:
     (e) date part only: "1030"
 HELP
     end
+
+    private
+
+    # Each entry of search result is:
+    #
+    #   [<timestamp>, <line_number>, <matched_text>]
+    #
+    # The sort must be done in;
+    #
+    #   - descending order for <timestamp>,
+    #   - ascending ordier for <line_number>.
+    #
+
+    SearchEntry = Struct.new(:timestamp, :line_number, :matched_text) {
+      def timestamp_size
+        timestamp.to_s.size
+      end
+    }
+
+    def print_search_result(entries)
+      maxcol_stamp = entries.map(&:timestamp_size).max
+      maxcol_num = entries.map(&:line_number).max
+
+      sort(entries).each { |e|
+        stamp_display = "%- *s" % [maxcol_stamp, e.timestamp]
+        num_display = "%*d" % [maxcol_num, e.line_number]
+
+        puts "#{stamp_display}: #{num_display}: #{e.matched_text}"
+      }
+    end
+
+    def sort(search_result)
+      search_result.sort { |a, b|
+        stamp_comparison = (b.timestamp <=> a.timestamp)
+        if stamp_comparison == 0
+          a.line_number <=> b.line_number
+        else
+          stamp_comparison
+        end
+      }
+    end
+
   end
 end
