@@ -17,15 +17,16 @@ class RbnotesCommandsListTest < Minitest::Test
 
     refute result.empty?
     result.lines.each { |line|
-      timestamp_str = line[0, 18].rstrip
+      segments = line.chomp.split(":")
+      timestamp_str = segments[0].rstrip
 
-      assert files.include?("#{timestamp_str}.md")
+      assert_includes files, "#{timestamp_str}.md"
 
-      truncated = line[20..-1].chomp
+      truncated = segments[1..-1].join(":")
       note_path = timestamp_to_path(timestamp_str, repo_path(CONF_RO))
       subject = extract_subject(note_path)
 
-      assert subject.include?(truncated)
+      assert_includes subject, truncated
     }
   end
 
@@ -60,8 +61,8 @@ class RbnotesCommandsListTest < Minitest::Test
 
     refute result.empty?
     result.lines.each { |line|
-      timestamp_str = line[0, 18].rstrip
-      assert files.include?("#{timestamp_str}.md")
+      timestamp_str = line.chomp.split(":")[0].rstrip
+      assert_includes files, "#{timestamp_str}.md"
     }
   end
 
