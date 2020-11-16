@@ -77,11 +77,15 @@ HELP
       def timestamp_size
         timestamp.to_s.size
       end
+
+      def line_number_digits_size
+        line_number.to_s.size
+      end
     }
 
     def print_search_result(entries)
       maxcol_stamp = entries.map(&:timestamp_size).max
-      maxcol_num = entries.map(&:line_number).max
+      maxcol_num = entries.map(&:line_number_digits_size).max
 
       sort(entries).each { |e|
         stamp_display = "%- *s" % [maxcol_stamp, e.timestamp]

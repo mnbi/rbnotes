@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.4.8] - 2020-11-16
+### Fixed
+- Fix issue #65: messy output of the `search` command.
+
 ## [0.4.7] - 2020-11-15
 ### Changed
 - Beautify output of the `search` command. (#63)
@@ -35,7 +39,7 @@ Nothing to record here.
 - Add individual help for each command. (#42)
 
 ### Fixed
-- Fix `add` fails without modification (#48)
+- Fix issue #48: `add` fails without modification.
 
 ## [0.4.2] - 2020-11-05
 ### Changed
