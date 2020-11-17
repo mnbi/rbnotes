@@ -51,7 +51,34 @@ module Rbnotes::Commands
     #     execute(Array, Rbnotes::Conf or Hash) -> nil
 
     def execute(args, conf)
-      patterns = Rbnotes.utils.expand_keyword_in_args(args)
+      @opts = {}
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-w", "--week"
+          @opts[:enum_week] = true
+        else
+          args.unshift(arg)
+          break
+        end
+      end
+
+      patterns = nil
+      if @opts[:enum_week]
+        arg = args.shift || Textrepo::Timestamp.now[0, 8]
+        case arg.size
+        when "yyyymodd".size, "yyyymoddhhmiss".size, "yyyymoddhhmiss_sfx".size
+          stamp_str = "#{arg}000000"[0, 14]
+          timestamp = Textrepo::Timestamp.parse_s(stamp_str)
+          patterns = Rbnotes.utils.timestamp_patterns_in_week(timestamp)
+        else
+          raise InvalidTimestampPatternError,
+                "cannot convert to a date [%s]" % args.unshift(arg)
+        end
+      else
+        patterns = Rbnotes.utils.expand_keyword_in_args(args)
+      end
+
       @repo = Textrepo.init(conf)
       # newer stamp shoud be above
       Rbnotes.utils.find_notes(patterns, @repo).each { |timestamp|
@@ -62,7 +89,7 @@ module Rbnotes::Commands
     def help                    # :nodoc:
       puts <<HELP
 usage:
-    #{Rbnotes::NAME} list [STAMP_PATTERN|KEYWORD]
+    #{Rbnotes::NAME} list [-w|--week][STAMP_PATTERN|KEYWORD]
 
 Show a list of notes.  When no arguments, make a list with all notes
 in the repository.  When specified STAMP_PATTERN, only those match the
@@ -84,6 +111,16 @@ KEYWORD:
     - "this_week"  (or "tw")
     - "last_week"  (or "lw")
 
+An option "--week" is also acceptable.  It specifies to enumerate all
+days of a week.  Typically, the option is used with a STAMP_PATTERN
+which specifies a date, such "20201117", then it enumerates all days
+of the week which contains "17th November 2020".
+
+A STAMP_PATTERN other than (a) and (b) causes an error if it was used
+with "--week" option.
+
+When no STAMP_PATTERN was specified with "--week" option, the output
+would be as same as the KEYWORD, "this_week" was specified.
 HELP
     end
 
