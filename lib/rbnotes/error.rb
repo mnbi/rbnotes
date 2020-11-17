@@ -7,11 +7,12 @@ module Rbnotes
   # :stopdoc:
 
   module ErrMsg
-    MISSING_ARGUMENT  = "missing argument: %s"
-    MISSING_TIMESTAMP = "missing timestamp: %s"
+    MISSING_ARGUMENT  = "Missing argument: %s"
+    MISSING_TIMESTAMP = "Missing timestamp: %s"
     NO_EDITOR         = "No editor is available: %s"
     PROGRAM_ABORT     = "External program was aborted: %s"
     UNKNOWN_KEYWORD   = "Unknown keyword: %s"
+    INVALID_TIMESTAMP_PATTERN = "Invalid timestamp pattern: %s"
   end
 
   # :startdoc:
@@ -64,4 +65,14 @@ module Rbnotes
       super(ErrMsg::UNKNOWN_KEYWORD % keyword)
     end
   end
+
+  ##
+  # An error raised when an invalid timestamp pattern was specified.
+
+  class InvalidTimestampPatternError < Error
+    def initialize(pattern)
+      super(ErrMsg::INVALID_TIMESTAMP_PATTERN % pattern)
+    end
+  end
+
 end

@@ -227,6 +227,17 @@ module Rbnotes
       }.flatten.sort{ |a, b| b <=> a }.uniq
     end
 
+    ##
+    # Enumerates all timestamp patterns in a week which contains a
+    # given timestamp as a day of the week.
+    #
+    # :call-seq:
+    #     timestamp_patterns_in_week(timestamp) -> [Array of Strings]
+
+    def timestamp_patterns_in_week(timestamp)
+      dates_in_week(start_date_in_the_week(timestamp.time)).map { |date| timestamp_pattern(date) }
+    end
+
     # :stopdoc:
 
     private
@@ -268,12 +279,16 @@ module Rbnotes
     end
 
     def start_date_in_this_week
-      today = Time.now
-      Date.new(today.year, today.mon, today.day).prev_day(wday(today))
+      start_date_in_the_week(Time.now)
     end
 
     def start_date_in_last_week
       start_date_in_this_week.prev_day(7)
+    end
+
+    def start_date_in_the_week(time)
+      parts = [:year, :mon, :day].map { |sym| time.send(sym) }
+      Date.new(*parts).prev_day(wday(time))
     end
 
     def wday(time)

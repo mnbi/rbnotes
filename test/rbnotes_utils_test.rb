@@ -74,4 +74,25 @@ class RbnotesUtilsTest < Minitest::Test
     arg = Rbnotes.utils.read_arg(nilio)
     assert arg.nil?
   end
+
+  # timestamps_in_week(timestamp)
+  def test_timestamp_patterns_in_week_enumerates_timestamps
+    a_day = Textrepo::Timestamp.new(Time.new(2020, 11, 17, 0, 0, 0))
+    days_of_week = [
+      "2020-11-16",             # Mon
+      "2020-11-17",             # Tue
+      "2020-11-18",             # Wed
+      "2020-11-19",             # Thu
+      "2020-11-20",             # Fri
+      "2020-11-21",             # Sat
+      "2020-11-22",             # Sun
+    ].map { |d| d.tr("-", "") }
+    days = Rbnotes.utils.timestamp_patterns_in_week(a_day)
+    refute days.nil?
+    assert_equal 7, days.size
+
+    days.sort!
+
+    assert_equal days_of_week, days
+  end
 end

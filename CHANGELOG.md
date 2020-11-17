@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 Nothing to record here.
 
+## [0.4.9] - 2020-11-17
+### Added
+- Add a new option `--week` to the `list` command. (#67)
+
 ## [0.4.8] - 2020-11-16
 ### Fixed
 - Fix issue #65: messy output of the `search` command.
