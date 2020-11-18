@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-Nothing to record here.
+- Fix issue #69: crashes with invalid timestamp pattern.
 
 ## [0.4.9] - 2020-11-17
 ### Added
