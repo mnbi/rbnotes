@@ -82,7 +82,7 @@ module Rbnotes::Commands
     def help                    # :nodoc:
       puts <<HELP
 usage:
-    #{Rbnotes::NAME} update [TIMESTAMP]
+    #{Rbnotes::NAME} update [-k|--keep] [TIMESTAMP]
 
 Updates the content of the note associated with given timestamp.
 

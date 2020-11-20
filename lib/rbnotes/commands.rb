@@ -58,13 +58,14 @@ Syntax:
 
 Example usage:
   #{Rbnotes::NAME} add [-t STAMP_PATTERN]
+  #{Rbnotes::NAME} commands [-d]
   #{Rbnotes::NAME} delete [TIMESTAMP]
   #{Rbnotes::NAME} export [TIMESTAMP [FILENAME]]
   #{Rbnotes::NAME} import FILE
   #{Rbnotes::NAME} list [STAMP_PATTERN|KEYWORD]
   #{Rbnotes::NAME} search PATTERN [STAMP_PATTERN]
   #{Rbnotes::NAME} show [TIMESTAMP]
-  #{Rbnotes::NAME} update [TIMESTAMP]
+  #{Rbnotes::NAME} update [-k] [TIMESTAMP]
 
 Further help for each command:
   #{Rbnotes::NAME} help commands

@@ -7,7 +7,7 @@ module Rbnotes::Commands
   class Help < Command
 
     def description             # :nodoc:
-      "Provide help on each command"
+      "Print help of each command"
     end
 
     ##
@@ -20,8 +20,6 @@ module Rbnotes::Commands
       case cmd_name
       when nil
         self.help
-      when "commands"
-        print_commands
       else
         Commands.load(cmd_name).help
       end
@@ -59,40 +57,5 @@ Further information:
 HELP
     end
 
-    # :stopdoc:
-    private
-
-    def print_commands
-      Dir.glob("*.rb", :base => __dir__) { |rb|
-        next if rb == "help.rb"
-        require_relative rb
-      }
-      commands = Commands.constants.difference([:Builtins, :Command])
-      builtins = Commands::Builtins.constants
-
-      puts "#{Rbnotes::NAME.capitalize} Commands:"
-      print_commands_desc(commands.sort)
-      puts
-      puts "for development purpose"
-      print_builtins_desc(builtins.sort)
-    end
-
-    def print_commands_desc(commands)
-      print_desc(Commands, commands)
-    end
-
-    def print_builtins_desc(builtins)
-      print_desc(Commands::Builtins, builtins)
-    end
-
-    def print_desc(mod, commands)
-      commands.map { |cmd|
-        name = "#{cmd.to_s.downcase}        "[0, 8]
-        desc = mod.const_get(cmd, false).new.description
-        puts "    #{name} #{desc}"
-      }
-    end
-
-    # :startdoc:
   end
 end
