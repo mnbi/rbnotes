@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-Nothing to record here.
+- Add a completion file for `zsh`.
+  - a new file `etc/zsh/_rbnotes`
 
 ## [0.4.10] - 2020-11-20
 ### Added

@@ -1,0 +1,93 @@
+#compdef rbnotes
+
+local __rbnotes_cmd __rbnotes_debug
+
+__rbnotes_process() {
+}
+
+function _rbnotes() {
+    local context curcontext=$curcontext stat line
+    typeset -A opt_args
+    local ret=1
+
+    _arguments \
+	-C \
+	'(- *)'{-v,--version}'[print version]' \
+	'(- *)'{-h,--help}'[show help]' \
+	'(- *)'{-c,--conf}'[config file]: :->conffile' \
+	'1: :__rbnotes_commands' \
+	'*:: :->args'
+
+    case $state in
+	(conffile)
+	    _files -g "*.yml" && ret=0
+	    ;;
+	(args)
+	    case $words[1] in
+		(add)
+		    _arguments \
+			-C \
+			'(-t --timestamp)'{-t,--timestamp}'[set timestamp]' \
+			'(-)*:: :->null_state' \
+			&& ret=0
+		    ;;
+		(export)
+		    _directories && ret=0
+		    ;;
+		(help)
+		    _arguments \
+			-C \
+			'1: :__rbnotes_commands' \
+			&& ret=0
+		    ;;
+		(import)
+		    _files -g '*.md' && ret=0
+		    ;;
+		(list|pick)
+		    _arguments \
+			-C \
+			'1: :__rbnotes_list_keywords' \
+			&& ret=0
+		    ;;
+		(update)
+		    _arguments \
+			-C \
+			'(-k --keep)'{-k,--keep}'[keep timestamp]' \
+			'(-)*:: :->nul_state' \
+			&& ret=0
+		    ;;
+	    esac
+	    ;;
+    esac
+
+    return ret
+}
+
+__rbnotes_commands() {
+    local -a _cmds
+    _cmds=( $(rbnotes commands -d) )
+    _describe -t commands Commands _cmds
+}
+
+__rbnotes_list_keywords() {
+    local -a _kw _this_month _this_year
+    _this_month=$(date "+%Y%m")
+    _last_month=$(date -v-1m "+%Y%m")
+    _this_year=$(date "+%Y")
+    _kw=(
+	{to,today}':Today'
+	{ye,yesterday}':Yesterday'
+	{tw,this_week}':This week'
+	{lw,last_week}':Last week'
+	"${_this_month}:This month"
+	"${_last_month}:Last month"
+	"${_this_year}:This year"
+	)
+    _describe -t keywords Keywords _kw
+}
+
+_rbnotes "$@"
+
+# Local Variables:
+# mode: shell-script
+# End:
