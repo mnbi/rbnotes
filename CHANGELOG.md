@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- Add a new command `statistics`. (#73)
+  - limited features
 - Add a completion file for `zsh`.
   - a new file `etc/zsh/_rbnotes`
 
