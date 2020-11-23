@@ -8,6 +8,7 @@ module Rbnotes
   require_relative "rbnotes/conf"
   require_relative "rbnotes/utils"
   require_relative "rbnotes/commands"
+  require_relative "rbnotes/statistics"
 
   class << self
     def utils
