@@ -13,6 +13,7 @@ module Rbnotes
     PROGRAM_ABORT     = "External program was aborted: %s"
     UNKNOWN_KEYWORD   = "Unknown keyword: %s"
     INVALID_TIMESTAMP_PATTERN = "Invalid timestamp pattern: %s"
+    NO_CONF_FILE      = "No configuration file: %s"
   end
 
   # :startdoc:
@@ -72,6 +73,16 @@ module Rbnotes
   class InvalidTimestampPatternError < Error
     def initialize(pattern)
       super(ErrMsg::INVALID_TIMESTAMP_PATTERN % pattern)
+    end
+  end
+
+  ##
+  # An error raised when the specified configuration file does not
+  # exist.
+
+  class NoConfFileError < Error
+    def initialize(filename)
+      super(ErrMsg::NO_CONF_FILE % filename)
     end
   end
 
