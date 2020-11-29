@@ -32,16 +32,18 @@ module Rbnotes
     DIRNAME_COMMON_CONF = ".config"
 
     def initialize(conf_path = nil)   # :nodoc:
-      @conf_path = conf_path || File.join(base_path, FILENAME_CONF)
-
+      @conf_path = conf_path
       @conf = {}
-      if FileTest.exist?(@conf_path)
+
+      if use_default_values?
+        @conf.merge!(DEFAULT_VALUES)
+      else
+        @conf_path ||= default_conf_file
+        raise NoConfFileError, @conf_path unless File.exist?(@conf_path)
+
         yaml_str = File.open(@conf_path, "r") { |f| f.read }
         @conf = YAML.load(yaml_str)
-      else
-        @conf.merge(DEFAULT_VALUES)
       end
-      self
     end
 
     def_delegators(:@conf,
@@ -99,9 +101,18 @@ module Rbnotes
       end
       return path
     end
-  end
+
+    def default_conf_file
+      File.join(base_path, FILENAME_CONF)
+    end
+
+    def use_default_values?
+      @conf_path.nil? && !File.exist?(default_conf_file)
+    end
 
   # :startdoc:
+
+  end
 
   class << self
     ##

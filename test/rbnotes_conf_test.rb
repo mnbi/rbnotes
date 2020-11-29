@@ -83,6 +83,17 @@ class RbnotesConfTest < Minitest::Test
   end
 
   def test_it_generate_repository_name_suitable_to_run_mode
+    prepare_conf_file
+
+    conf = Rbnotes.conf(CONF_TEST_PATH)
+    assert conf[:repository_name].end_with?("_test")
+  end
+
+  # [issue #77]
+  def test_it_fails_when_the_specified_conf_file_does_not_exist
+    assert_raises(Rbnotes::NoConfFileError) {
+      Rbnotes.conf("conf_hoge.yml")
+    }
   end
 
   private
@@ -119,6 +130,6 @@ class RbnotesConfTest < Minitest::Test
   def prepare_conf(path)
     conf = CONF_BASE.dup
     conf[:run_mode] = :test
-    write_conf_file(conf, path)
+    write_conf_file(conf, path) unless File.exist?(path)
   end
 end

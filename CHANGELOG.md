@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- Fix issue #77: no error with a non-existing config file.
 - Add a new command `statistics`. (#73)
   - limited features
 - Add a completion file for `zsh`.
