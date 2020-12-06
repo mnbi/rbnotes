@@ -103,23 +103,16 @@ module Rbnotes
     end
 
     ##
-    # Reads an argument from the IO object.  Typically, it is intended
-    # to be used with STDIN.
+    # Generates multiple Textrepo::Timestamp objects from the command
+    # line arguments.  When no argument is given, try to read from
+    # STDIN.
     #
     # :call-seq:
-    #   read_arg(IO) -> String
+    #   read_multiple_timestamps(args) -> [String]
 
-    def read_arg(io)
-      # assumes the reading line looks like:
-      #
-      #     foo bar baz ...
-      #
-      # then, only the first string is interested
-      begin
-        io.gets.split(":")[0].rstrip
-      rescue NoMethodError => _
-        nil
-      end
+    def read_multiple_timestamps(args)
+      strings = args.size < 1 ? read_multiple_args($stdin) : args
+      strings.map { |str| Textrepo::Timestamp.parse_s(str) }
     end
 
     ##
@@ -241,6 +234,41 @@ module Rbnotes
     # :stopdoc:
 
     private
+
+    ##
+    # Reads an argument from the IO object.  Typically, it is intended
+    # to be used with STDIN.
+    #
+    # :call-seq:
+    #   read_arg(IO) -> String
+
+    def read_arg(io)
+      read_multiple_args(io)[0]
+    end
+
+    ##
+    # Reads arguments from the IO object.  Typically, it is intended
+    # to be used with STDIN.
+    #
+    # :call-seq:
+    #   read_multiple_arg(IO) -> [String]
+
+    def read_multiple_args(io)
+      strings = io.readlines
+      strings.map { |str|
+        # assumes the reading line looks like:
+        #
+        #     foo bar baz ...
+        #
+        # then, only the first string is interested
+        begin
+          str.split(":")[0].rstrip
+        rescue NoMethodError => _
+          nil
+        end
+      }.compact
+    end
+
     def search_in_path(name)
       search_paths = ENV["PATH"].split(":")
       found = search_paths.map { |path|

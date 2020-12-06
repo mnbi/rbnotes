@@ -64,7 +64,7 @@ Example usage:
   #{Rbnotes::NAME} import FILE
   #{Rbnotes::NAME} list [STAMP_PATTERN|KEYWORD]
   #{Rbnotes::NAME} search PATTERN [STAMP_PATTERN]
-  #{Rbnotes::NAME} show [TIMESTAMP]
+  #{Rbnotes::NAME} show [TIMESTAMP...]
   #{Rbnotes::NAME} statistics ([-y]|[-m])
   #{Rbnotes::NAME} update [-k] [TIMESTAMP]
 

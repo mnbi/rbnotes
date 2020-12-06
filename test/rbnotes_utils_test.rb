@@ -68,11 +68,26 @@ class RbnotesUtilsTest < Minitest::Test
     assert tmpfile && FileTest.exist?(tmpfile)
   end
 
-  # read_arg(io)
-  def test_read_arg_returns_nil_when_reads_nil_from_io
-    nilio = StringIO.new
-    arg = Rbnotes.utils.read_arg(nilio)
-    assert arg.nil?
+  # read_timestamp(args)
+  def test_read_timestamp_returns_a_timetamp
+    timestamp0 = Textrepo::Timestamp.now
+    args = [timestamp0.to_s]
+    $stdin = StringIO.new(args.join("\n"))
+
+    stamp = Rbnotes.utils.read_timestamp([])
+    assert_equal timestamp0, stamp
+  end
+
+  # read_multiple_timestamps(args)
+  def test_read_multiple_timestamp_returns_an_array_of_timestamps
+    timestamp0 = Textrepo::Timestamp.now
+    stamp_args = [timestamp0, timestamp0.succ]
+    args = stamp_args.map(&:to_s)
+    $stdin = StringIO.new(args.join("\n"))
+
+    stamps = Rbnotes.utils.read_multiple_timestamps([])
+
+    assert_equal stamp_args, stamps.sort
   end
 
   # timestamps_in_week(timestamp)

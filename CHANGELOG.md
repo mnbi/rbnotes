@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- Add a feature to show multiple notes at once. (#79)
 - Fix issue #77: no error with a non-existing config file.
 - Add a new command `statistics`. (#73)
   - limited features
