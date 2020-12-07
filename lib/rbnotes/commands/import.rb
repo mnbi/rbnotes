@@ -4,8 +4,11 @@ module Rbnotes::Commands
   # Imports a existing file which specified by the argument as a note.
   #
   # A timestamp is generated referring to the birthtime of the given
-  # file.  If birthtime is not available on the system, use mtime
+  # file.  If birthtime is not available on the system, uses mtime
   # (modification time).
+  #
+  # When the option, "-m" (or "--use-mtime") is specified, uses mtime
+  # instead of birthtime.
   #
   # Occasionally, there is another note which has the same timestmap
   # in the repository.  Then, tries to create a new timestamp with a
@@ -25,11 +28,29 @@ module Rbnotes::Commands
     #     execute([PATHNAME], Rbnotes::Conf or Hash) -> nil
 
     def execute(args, conf)
+      @opts = {}
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-m", "--use-mtime"
+          @opts[:use_mtime] = true
+        else
+          args.unshift(arg)
+          break
+        end
+      end
+
       file = args.shift
       unless file.nil?
         st = File::Stat.new(file)
-        btime = st.respond_to?(:birthtime) ? st.birthtime : st.mtime
-        stamp = Textrepo::Timestamp.new(btime)
+        time = nil
+        if @opts[:use_mtime]
+          time = st.mtime
+        else
+          time = st.respond_to?(:birthtime) ? st.birthtime : st.mtime
+        end
+
+        stamp = Textrepo::Timestamp.new(time)
         puts "Import [%s] (timestamp [%s]) ..." % [file, stamp]
 
         repo = Textrepo.init(conf)
@@ -72,7 +93,7 @@ module Rbnotes::Commands
           puts "Cannot create a text into the repository with the" \
                " specified file [%s]."  % file
           puts "For, the birthtime [%s] is identical to some notes" \
-               " already exists in the reopsitory." % btime
+               " already exists in the reopsitory." % time
           puts "Change the birthtime of the target file, then retry."
         else
           puts "... Done."
@@ -86,7 +107,7 @@ module Rbnotes::Commands
     def help                    # :nodoc:
       puts <<HELP
 usage:
-    #{Rbnotes::NAME} import FILE
+    #{Rbnotes::NAME} import [-m|--use-mtime] FILE
 
 Imports a existing file which specified by the argument as a note.
 

@@ -50,6 +50,35 @@ class RbnotesCommandsImportTest < Minitest::Test
     assert result.include?("empty")
   end
 
+  def test_it_uses_mtime_when_specified
+    sandbox_dir = File.expand_path("test_for_import", File.expand_path("sandbox", __dir__))
+    # prepare a file to import
+    text = ["This file is intended to be used for import."]
+    FileUtils.mkdir_p(sandbox_dir)
+    filepath = File.expand_path("importfile.md", sandbox_dir)
+    File.open(filepath, "w") { |f| f.puts text }
+    btime = File::Stat.new(filepath).birthtime
+    sleep(1)                    # wait 1 second to change `mtime`
+    mtime = Time.now
+    assert false, "increase sleep seconds, then retry" if equal_time?(btime, mtime)
+    FileUtils.touch(filepath, :mtime => mtime)
+
+    # import the file
+    result = execute(:import, ["-m", filepath], @conf_rw)
+    check_imported_file(result, mtime)
+
+    # prepare to import
+    old_mtime = File::Stat.new(filepath).mtime
+    sleep(1)
+    mtime = Time.now
+    assert false, "increase sleep seconds, then retry" if equal_time?(old_mtime, mtime)
+    FileUtils.touch(filepath, :mtime => mtime)
+
+    # import the file
+    result = execute(:import, ["--use-mtime", filepath], @conf_rw)
+    check_imported_file(result, mtime)
+  end
+
   private
   def expected_path(org_file)
     st = File::Stat.new(org_file)
@@ -57,4 +86,22 @@ class RbnotesCommandsImportTest < Minitest::Test
 
     timestamp_to_path(btime.strftime("%Y%m%d%H%M%S"), repo_path(@conf_rw))
   end
+
+  def equal_time?(t0, t1)
+    a0, a1 = [t0, t1].map { |t|
+      [:year, :month, :day, :hour, :min, :sec].map { |s| t.send(s) }
+    }
+    a0 == a1
+  end
+
+  def check_imported_file(result, mtime)
+    /timestamp\s+\[([0-9]+)\]/.match(result) { |md|
+      timestamp_str = md[1]
+      assert_includes timestamp_str, mtime.strftime("%Y%m%d%H%M%S")
+
+      notepath = timestamp_to_path(timestamp_str, repo_path(@conf_rw))
+      refute notepath.nil?
+    }
+  end
+
 end
