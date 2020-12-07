@@ -9,7 +9,8 @@ class RbnotesCommandsImportTest < Minitest::Test
   end
 
   def teardown
-    FileUtils.rm_r(repo_path(@conf_rw))
+    path = repo_path(@conf_rw)
+    FileUtils.rm_r(path) if FileTest.exist?(path)
   end
 
   def test_that_it_can_import_an_existing_file
