@@ -5,12 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-- Add a feature to show multiple notes at once. (#79)
-- Fix issue #77: no error with a non-existing config file.
+## [0.4.11] - 2020-12-07
+### Added
 - Add a new command `statistics`. (#73)
   - limited features
 - Add a completion file for `zsh`.
   - a new file `etc/zsh/_rbnotes`
+
+### Changed
+- Add a new option for `import` to use `mtime`. (#82)
+- Add a feature to show multiple notes at once. (#79)
+
+### Fixed
+- Fix issue #77: no error with a non-existing config file.
 
 ## [0.4.10] - 2020-11-20
 ### Added
