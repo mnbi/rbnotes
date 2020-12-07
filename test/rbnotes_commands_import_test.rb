@@ -57,26 +57,31 @@ class RbnotesCommandsImportTest < Minitest::Test
     FileUtils.mkdir_p(sandbox_dir)
     filepath = File.expand_path("importfile.md", sandbox_dir)
     File.open(filepath, "w") { |f| f.puts text }
-    btime = File::Stat.new(filepath).birthtime
-    sleep(1)                    # wait 1 second to change `mtime`
-    mtime = Time.now
-    assert false, "increase sleep seconds, then retry" if equal_time?(btime, mtime)
-    FileUtils.touch(filepath, :mtime => mtime)
 
-    # import the file
-    result = execute(:import, ["-m", filepath], @conf_rw)
-    check_imported_file(result, mtime)
+    # The following test is valid only if the system has `birthtime`.
+    st = File::Stat.new(filepath)
+    if st.respond_to?(:birthtime)
+      btime = File::Stat.new(filepath).birthtime
+      sleep(1)                    # wait 1 second to change `mtime`
+      mtime = Time.now
+      assert false, "increase sleep seconds, then retry" if equal_time?(btime, mtime)
+      FileUtils.touch(filepath, :mtime => mtime)
 
-    # prepare to import
-    old_mtime = File::Stat.new(filepath).mtime
-    sleep(1)
-    mtime = Time.now
-    assert false, "increase sleep seconds, then retry" if equal_time?(old_mtime, mtime)
-    FileUtils.touch(filepath, :mtime => mtime)
+      # import the file
+      result = execute(:import, ["-m", filepath], @conf_rw)
+      check_imported_file(result, mtime)
 
-    # import the file
-    result = execute(:import, ["--use-mtime", filepath], @conf_rw)
-    check_imported_file(result, mtime)
+      # prepare to import
+      old_mtime = File::Stat.new(filepath).mtime
+      sleep(1)
+      mtime = Time.now
+      assert false, "increase sleep seconds, then retry" if equal_time?(old_mtime, mtime)
+      FileUtils.touch(filepath, :mtime => mtime)
+
+      # import the file
+      result = execute(:import, ["--use-mtime", filepath], @conf_rw)
+      check_imported_file(result, mtime)
+    end
   end
 
   private
