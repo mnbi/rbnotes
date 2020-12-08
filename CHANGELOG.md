@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- Fix issue #80: suppress unnecessary error message.
+
 ## [0.4.11] - 2020-12-07
 ### Added
 - Add a new command `statistics`. (#73)
