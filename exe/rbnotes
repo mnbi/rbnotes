@@ -48,10 +48,16 @@ app = App.new
 begin
   app.parse_global_options(ARGV)
   app.run(ARGV)
-rescue Errno::EPIPE => e
+rescue Errno::EPIPE => _
   # Fix issue #61: When the pipeline which rbnotes connects is
   # discarded by the other program, the execption was raised.  It does
   # not end abnormally for rbnotes.  So, just ignores the exception.
+  exit 0
+rescue NoArgumentError => _
+  # Fix issue #80: Typically, this error raises when a command tries
+  # to read the standard input for its arguments and gets nil.  It
+  # means user wants to cancel to execute.  So, just ignore the error
+  # and exit.
   exit 0
 rescue MissingArgumentError, MissingTimestampError,
        NoEditorError, ProgramAbortError,

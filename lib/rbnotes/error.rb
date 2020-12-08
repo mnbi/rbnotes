@@ -86,4 +86,13 @@ module Rbnotes
     end
   end
 
+  ##
+  # An error raised when no arguments is spcified.
+
+  class NoArgumentError < Error
+    def initialize
+      super
+    end
+  end
+
 end

@@ -99,6 +99,7 @@ module Rbnotes
 
     def read_timestamp(args)
       str = args.shift || read_arg($stdin)
+      raise NoArgumentError if str.nil?
       Textrepo::Timestamp.parse_s(str)
     end
 
@@ -112,6 +113,7 @@ module Rbnotes
 
     def read_multiple_timestamps(args)
       strings = args.size < 1 ? read_multiple_args($stdin) : args
+      raise NoArgumentError if (strings.nil? || strings.empty?)
       strings.map { |str| Textrepo::Timestamp.parse_s(str) }
     end
 
