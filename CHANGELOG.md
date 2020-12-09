@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- Add a new option, `verbose` for `list` command. (#76)
 - Fix issue #80: suppress unnecessary error message.
 
 ## [0.4.11] - 2020-12-07

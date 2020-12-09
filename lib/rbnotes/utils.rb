@@ -185,25 +185,28 @@ module Rbnotes
     # Makes a headline with the timestamp and subject of the notes, it
     # looks like as follows:
     #
-    #   |<------------------ console column size ------------------->|
-    #   +-- timestamp ---+  +-  subject (the 1st line of each note) -+
-    #   |                |  |                                        |
-    #   20101010001000_123: I love Macintosh.                        [EOL]
-    #   20100909090909_999: This is very very long long loooong subje[EOL]
-    #                     ++
-    #                      ^--- delimiter (2 characters)
+    #   |<--------------- console column size -------------------->|
+    #   |   |+-- timestamp ---+  +-subject (the 1st line of note) -+
+    #   |                     |  |                                 |
+    #   |   |20101010001000_123: I love Macintosh.                 [EOL]
+    #   |   |20100909090909_999: This is very very long looong subj[EOL]
+    #   |<->|                 |  |
+    #     ^--- pad             ++
+    #                          ^--- delimiter (2 characters)
     #
     # The subject part will truncate when it is long.
 
-    def make_headline(timestamp, text)
+    def make_headline(timestamp, text, pad = nil)
       _, column = IO.console_size
       delimiter = ": "
       timestamp_width = timestamp.to_s.size
       subject_width = column - timestamp_width - delimiter.size - 1
+      subject_width -= pad.size unless pad.nil?
 
       subject = remove_heading_markup(text[0])
 
       ts_part = "#{timestamp.to_s}    "[0..(timestamp_width - 1)]
+      ts_part.prepend(pad) unless pad.nil?
       sj_part = truncate_str(subject, subject_width)
 
       ts_part + delimiter + sj_part
@@ -212,6 +215,7 @@ module Rbnotes
     ##
     # Finds all notes those timestamps match to given patterns in the
     # given repository.  Returns an Array contains Timestamp objects.
+    # The returned Array is sorted by Timestamp.
     #
     # :call-seq:
     #     find_notes(Array of timestamp patterns, Textrepo::Repository)
