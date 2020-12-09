@@ -57,6 +57,8 @@ module Rbnotes::Commands
         case arg
         when "-w", "--week"
           @opts[:enum_week] = true
+        when "-v", "--verbose"
+          @opts[:verbose] = true
         else
           args.unshift(arg)
           break
@@ -80,10 +82,24 @@ module Rbnotes::Commands
       end
 
       @repo = Textrepo.init(conf)
-      # newer stamp shoud be above
-      Rbnotes.utils.find_notes(patterns, @repo).each { |timestamp|
-        puts Rbnotes.utils.make_headline(timestamp, @repo.read(timestamp))
-      }
+      notes = Rbnotes.utils.find_notes(patterns, @repo)
+      output = []
+      if @opts[:verbose]
+        collect_timestamps_by_date(notes).each { |date, timestamps|
+          output << "#{date} (#{timestamps.size})"
+          timestamps.each { |timestamp|
+            pad = "  "
+            output << Rbnotes.utils.make_headline(timestamp,
+                                                  @repo.read(timestamp), pad)
+          }
+        }
+      else
+        notes.each { |timestamp|
+          output << Rbnotes.utils.make_headline(timestamp,
+                                                @repo.read(timestamp))
+        }
+      end
+      puts output
     end
 
     def help                    # :nodoc:
@@ -123,6 +139,25 @@ When no STAMP_PATTERN was specified with "--week" option, the output
 would be as same as the KEYWORD, "this_week" was specified.
 HELP
     end
+
+    # :stopdoc:
+
+    private
+
+    def collect_timestamps_by_date(timestamps)
+      result = {}
+      timestamps.map { |ts|
+        [ts.strftime("%Y-%m-%d"), ts]
+      }.reduce(result) { |r, pair|
+        date, stamp = pair
+        r[date] ||= []
+        r[date] << stamp
+        r
+      }
+      result
+    end
+
+    # :startdoc:
 
   end
 end
