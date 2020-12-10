@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- Add new keywords for `list` command. (#90)
+  - `this_month` and `last_month`
 - Add a new option, `verbose` for `list` command. (#76)
 - Fix issue #80: suppress unnecessary error message.
 
