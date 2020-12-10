@@ -24,10 +24,12 @@ module Rbnotes::Commands
     #
     # A keyword must be one of them:
     #
-    # - "today"      (or "to")
-    # - "yeasterday" (or "ye")
-    # - "this_week"  (or "tw")
-    # - "last_week"  (or "lw")
+    #   - "today"      (or "to")
+    #   - "yeasterday" (or "ye")
+    #   - "this_week"  (or "tw")
+    #   - "last_week"  (or "lw")
+    #   - "this_month" (or "tm")
+    #   - "last_month" (or "lm")
     #
     # Here is several examples of timestamp patterns.
     #
@@ -126,6 +128,8 @@ KEYWORD:
     - "yeasterday" (or "ye")
     - "this_week"  (or "tw")
     - "last_week"  (or "lw")
+    - "this_month" (or "tm")
+    - "last_month" (or "lm")
 
 An option "--week" is also acceptable.  It specifies to enumerate all
 days of a week.  Typically, the option is used with a STAMP_PATTERN

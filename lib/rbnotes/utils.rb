@@ -138,6 +138,8 @@ module Rbnotes
     #   - "yeasterday" (or "ye")
     #   - "this_week"  (or "tw")
     #   - "last_week"  (or "lw")
+    #   - "this_month" (or "tm")
+    #   - "last_month" (or "lm")
     #
     # :call-seq:
     #   expand_keyword_in_args(Array of Strings) -> Array of Strings
@@ -149,7 +151,8 @@ module Rbnotes
       while args.size > 0
         arg = args.shift
         if ["today", "to", "yesterday", "ye",
-            "this_week", "tw", "last_week", "lw"].include?(arg)
+            "this_week", "tw", "last_week", "lw",
+            "this_month", "tm", "last_month", "lm"].include?(arg)
           patterns.concat(Rbnotes.utils.expand_keyword(arg))
         else
           patterns << arg
@@ -175,6 +178,10 @@ module Rbnotes
         patterns.concat(dates_in_this_week.map { |d| timestamp_pattern(d) })
       when "last_week", "lw"
         patterns.concat(dates_in_last_week.map { |d| timestamp_pattern(d) })
+      when "this_month", "tm"
+        patterns.concat(dates_in_this_month.map { |d| timestamp_pattern(d) })
+      when "last_month", "lm"
+        patterns.concat(dates_in_last_month.map { |d| timestamp_pattern(d) })
       else
         raise UnknownKeywordError, keyword
       end
@@ -333,6 +340,36 @@ module Rbnotes
       dates = [start_date]
       1.upto(6) { |i| dates << start_date.next_day(i) }
       dates
+    end
+
+    def dates_in_this_month
+      today = Time.now
+      first_date = date(Time.new(today.year, today.mon, 1))
+      dates_in_month(first_date)
+    end
+
+    def dates_in_last_month
+      today = Time.now
+      first_date_of_this_month = date(Time.new(today.year, today.mon, 1))
+      dates_in_month(first_date_of_this_month.prev_month)
+    end
+
+    def dates_in_month(first_date)
+      days = days_in_month(first_date.mon, leap: first_date.leap?)
+      dates = [first_date]
+      1.upto(days - 1) { |i| dates << first_date.next_day(i) }
+      dates
+    end
+
+    DAYS = {
+      #             1   2   3   4   5   6   7   8   9  10  11  12
+      #            Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+      false => [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+      true  => [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+    }
+
+    def days_in_month(mon, leap: false)
+      DAYS[leap][mon]
     end
 
     def truncate_str(str, size)
