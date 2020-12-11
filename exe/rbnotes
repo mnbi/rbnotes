@@ -64,6 +64,7 @@ rescue MissingArgumentError, MissingTimestampError,
        Textrepo::InvalidTimestampStringError,
        InvalidTimestampPatternError,
        NoConfFileError,
+       NoTemplateFileError,
        ArgumentError,
        Errno::EACCES => e
   puts e.message

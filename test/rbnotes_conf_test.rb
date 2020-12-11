@@ -96,6 +96,45 @@ class RbnotesConfTest < Minitest::Test
     }
   end
 
+  def test_it_holds_config_file_path
+    prepare_conf_file
+    conf = Rbnotes.conf(CONF_TEST_PATH)
+    assert_equal CONF_TEST_PATH, conf[:path]
+  end
+
+  def test_it_holds_config_home
+    conf = Rbnotes.conf
+    refute_nil conf[:config_home]
+  end
+
+  def test_it_holds_config_home_when_xdg_config_home_available
+    xdg_orig = ENV["XDG_CONFIG_HOME"]
+
+    prepare_xdg_conf
+    ENV["XDG_CONFIG_HOME"] = SANDBOX_DIR
+    conf = Rbnotes.conf
+
+    assert_equal File.join(ENV["XDG_CONFIG_HOME"], "rbnotes"), conf[:config_home]
+
+    ENV["XDG_CONFIG_HOME"] = xdg_orig if xdg_orig
+  end
+
+  def test_it_holds_config_home_when_xdg_config_home_unavailable
+    xdg_orig = ENV["XDG_CONFIG_HOME"]
+    home_orig = ENV["HOME"]
+
+    prepare_default_conf
+    ENV.delete("XDG_CONFIG_HOME")
+    ENV["HOME"] = SANDBOX_DIR
+    conf = Rbnotes::conf
+
+    expected = File.join(ENV["HOME"], ".config", "rbnotes")
+    assert_equal expected, conf[:config_home]
+
+    ENV["HOME"] = home_orig if home_orig
+    ENV["XDG_CONFIG_HOME"] = xdg_orig if xdg_orig
+  end
+
   private
   def prepare_conf_file
     conf_prod = CONF_BASE.dup

@@ -31,19 +31,26 @@ module Rbnotes
 
     DIRNAME_COMMON_CONF = ".config"
 
-    def initialize(conf_path = nil)   # :nodoc:
-      @conf_path = conf_path
+    def initialize(path = nil)   # :nodoc:
       @conf = {}
 
-      if use_default_values?
-        @conf.merge!(DEFAULT_VALUES)
+      unless path.nil?
+        abspath = File.expand_path(path)
+        raise NoConfFileError, path unless FileTest.exist?(abspath)
+        @conf[:path] = abspath
       else
-        @conf_path ||= default_conf_file
-        raise NoConfFileError, @conf_path unless File.exist?(@conf_path)
-
-        yaml_str = File.open(@conf_path, "r") { |f| f.read }
-        @conf = YAML.load(yaml_str)
+        @conf[:path] = default_conf_path
       end
+
+      values =
+        if FileTest.exist?(@conf[:path])
+          yaml_str = File.open(@conf[:path], "r") { |f| f.read }
+          YAML.load(yaml_str)
+        else
+          DEFAULT_VALUES
+        end
+      @conf.merge!(values)
+      @conf[:config_home] = config_home
     end
 
     def_delegators(:@conf,
@@ -91,7 +98,7 @@ module Rbnotes
       :test => "_test",
     }
 
-    def base_path
+    def config_home
       path = nil
       xdg, user = ["XDG_CONFIG_HOME", "HOME"].map{|n| ENV[n]}
       if xdg
@@ -99,15 +106,11 @@ module Rbnotes
       else
         path = File.join(user, DIRNAME_COMMON_CONF, DIRNAME_RBNOTES)
       end
-      return path
+      path
     end
 
-    def default_conf_file
-      File.join(base_path, FILENAME_CONF)
-    end
-
-    def use_default_values?
-      @conf_path.nil? && !File.exist?(default_conf_file)
+    def default_conf_path
+      File.join(config_home, FILENAME_CONF)
     end
 
   # :startdoc:

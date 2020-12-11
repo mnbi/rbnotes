@@ -14,6 +14,7 @@ module Rbnotes
     UNKNOWN_KEYWORD   = "Unknown keyword: %s"
     INVALID_TIMESTAMP_PATTERN = "Invalid timestamp pattern: %s"
     NO_CONF_FILE      = "No configuration file: %s"
+    NO_TEMPLATE_FILE  = "No template file: %s"
   end
 
   # :startdoc:
@@ -92,6 +93,15 @@ module Rbnotes
   class NoArgumentError < Error
     def initialize
       super
+    end
+  end
+
+  ##
+  # An error raised when the specified template files does not exist.
+  #
+  class NoTemplateFileError < Error
+    def initialize(filepath)
+      super(ErrMsg::NO_TEMPLATE_FILE % filepath)
     end
   end
 
