@@ -42,6 +42,9 @@ module Rbnotes::Commands
           raise ArgumentError, "missing timestamp: %s" % args.unshift(arg) if stamp_str.nil?
           stamp_str = complement_timestamp_pattern(stamp_str)
           @opts[:timestamp] = Textrepo::Timestamp.parse_s(stamp_str)
+        when "-f", "--template-file"
+          template_path = args.shift
+          @opts[:template] = template_path
         else
           args.unshift(arg)
           break
@@ -54,7 +57,8 @@ module Rbnotes::Commands
       editor = Rbnotes.utils.find_program(candidates)
       raise Rbnotes::NoEditorError, candidates if editor.nil?
 
-      tmpfile = Rbnotes.utils.run_with_tmpfile(editor, stamp.to_s)
+      template = read_template(conf)
+      tmpfile = Rbnotes.utils.run_with_tmpfile(editor, stamp.to_s, template)
 
       unless FileTest.exist?(tmpfile)
         puts "Cancel adding, since nothing to store"
@@ -127,5 +131,26 @@ HELP
       end
       stamp_str
     end
+
+    def read_template(conf)
+      template = nil
+      template_path = @opts[:template] || conf[:template]
+
+      if template_path
+        raise Rbnotes::NoTemplateFileError, template_path unless FileTest.exist?(template_path)
+        template = File.readlines(template_path, chomp: true)
+      else
+        template_path = default_template_file(conf)
+        template = File.readlines(template_path, chomp: true) if FileTest.exist?(template_path)
+      end
+
+      template
+    end
+
+    def default_template_file(conf)
+      dir = File.join(conf[:config_home], "templates")
+      File.expand_path("default.md", dir)
+    end
+
   end
 end

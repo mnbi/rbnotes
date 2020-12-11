@@ -8,12 +8,14 @@ require "minitest/autorun"
 
 module RbnotesTestUtils
   CONF_RO = {
+    :config_home => File.expand_path("fixtures", __dir__),
     :repository_type => :file_system,
     :repository_name => "test_repo",
     :repository_base => File.expand_path("fixtures", __dir__),
   }
 
   CONF_RW = {
+    :config_home => File.expand_path("sandbox", __dir__),
     :repository_type => :file_system,
     :repository_name => "test_repo",
     :repository_base => File.expand_path("sandbox", __dir__),

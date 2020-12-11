@@ -8,6 +8,10 @@ class RbnotesCommandsAddTest < Minitest::Test
     @conf_rw[:editor] = File.expand_path("fake_editor", __dir__)
   end
 
+  def teardown
+    remove_template_file
+  end
+
   def test_that_it_can_create_a_new_note
     assert_success_to_add_with_timestamp(nil, true)
   end
@@ -66,6 +70,23 @@ class RbnotesCommandsAddTest < Minitest::Test
     assert_includes result, "Cancel"
   end
 
+  def test_it_take_template_file_content
+    prepare_template_file
+
+    conf = @conf_rw.dup
+    conf[:editor] = File.expand_path("fake_editor_do_nothing", __dir__)
+    result = execute(:add, [], conf)
+
+    stamp_str = /[A-z ]+\[([0-9_]+)\]/.match(result).to_a[1]
+    refute stamp_str.nil?
+    note_path = timestamp_to_path(stamp_str, repo_path(conf))
+
+    content = File.readlines(note_path, chomp: true)
+    assert_equal TEMPLATE, content
+
+    FileUtils.rm_f(note_path)
+  end
+
   private
   def assert_success_to_add_with_timestamp(pattern = nil, cleanup = true)
     args = pattern.nil? ? [] : ["-t", pattern]
@@ -81,6 +102,29 @@ class RbnotesCommandsAddTest < Minitest::Test
     assert_path_exists note_path
 
     FileUtils.rm_f(note_path) if cleanup
+  end
+
+  TEMPLATE = [
+    "# (subject)",
+    "## (date)",
+    "",
+    "***",
+  ]
+
+  def prepare_template_file
+    template_file = default_template
+
+    FileUtils.mkdir_p(File.dirname(template_file))
+    File.open(template_file, "w") { |f| f.write(TEMPLATE.join("\n")) }
+  end
+
+  def remove_template_file
+    FileUtils.rm_f(default_template)
+  end
+
+  def default_template
+    template_dir = File.join(@conf_rw[:config_home], "templates")
+    File.expand_path("default.md", template_dir)
   end
 
 end
