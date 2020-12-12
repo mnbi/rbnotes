@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- Add a feature to refer the picker program option for `pick`
+  command. (#89)
 - Add a feature to use a template file for `add` command. (#87)
 - Add new keywords for `list` command. (#90)
   - `this_month` and `last_month`
