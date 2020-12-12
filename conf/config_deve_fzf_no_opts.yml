@@ -5,5 +5,4 @@
 :repository_base: "tmp"
 :pager: "bat -l md"
 :picker: "fzf"
-:picker_option: "-m"
 :editor: "/usr/local/bin/emacsclient"

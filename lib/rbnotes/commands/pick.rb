@@ -20,8 +20,12 @@ module Rbnotes::Commands
 
       picker = conf[:picker]
       unless picker.nil?
+        picker_opts = conf[:picker_option]
+        cmds = [picker]
+        cmds.concat(picker_opts.split) unless picker_opts.nil?
+
         require 'open3'
-        result = Open3.pipeline_rw(picker) { |stdin, stdout, _|
+        result = Open3.pipeline_rw(cmds) { |stdin, stdout, _|
           stdin.puts list
           stdin.close
           stdout.read
