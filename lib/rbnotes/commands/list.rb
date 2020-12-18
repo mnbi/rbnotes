@@ -74,11 +74,18 @@ module Rbnotes::Commands
         when "yyyymodd".size, "yyyymoddhhmiss".size, "yyyymoddhhmiss_sfx".size
           stamp_str = "#{arg}000000"[0, 14]
           timestamp = Textrepo::Timestamp.parse_s(stamp_str)
-          patterns = Rbnotes.utils.timestamp_patterns_in_week(timestamp)
+        when "modd".size
+          this_year = Time.now.year.to_s
+          stamp_str = "#{this_year}#{arg}000000"
+          begin
+            timestamp = Textrepo::Timestamp.parse_s(stamp_str)
+          rescue Textrepo::InvalidTimestampStringError => _e
+            raise InvalidTimestampPatternAsDateError, arg
+          end
         else
-          raise InvalidTimestampPatternError,
-                "cannot convert to a date [%s]" % args.unshift(arg)
+          raise InvalidTimestampPatternAsDateError, args.unshift(arg)
         end
+        patterns = Rbnotes.utils.timestamp_patterns_in_week(timestamp)
       else
         patterns = Rbnotes.utils.expand_keyword_in_args(args)
       end
