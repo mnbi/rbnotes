@@ -5,12 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-- Add a feature to refer the picker program option for `pick`
-  command. (#89)
+Nothing to record here.
+
+## [0.4.12] - 2020-12-18
+### Changed
+- Make clear the spec of `list` command args. (#94)
 - Add a feature to use a template file for `add` command. (#87)
 - Add new keywords for `list` command. (#90)
   - `this_month` and `last_month`
 - Add a new option, `verbose` for `list` command. (#76)
+
+### Fixed
 - Fix issue #80: suppress unnecessary error message.
 
 ## [0.4.11] - 2020-12-07

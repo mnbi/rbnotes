@@ -7,14 +7,15 @@ module Rbnotes
   # :stopdoc:
 
   module ErrMsg
-    MISSING_ARGUMENT  = "Missing argument: %s"
-    MISSING_TIMESTAMP = "Missing timestamp: %s"
-    NO_EDITOR         = "No editor is available: %s"
-    PROGRAM_ABORT     = "External program was aborted: %s"
-    UNKNOWN_KEYWORD   = "Unknown keyword: %s"
-    INVALID_TIMESTAMP_PATTERN = "Invalid timestamp pattern: %s"
-    NO_CONF_FILE      = "No configuration file: %s"
-    NO_TEMPLATE_FILE  = "No template file: %s"
+    MISSING_ARGUMENT  = "missing argument: %s"
+    MISSING_TIMESTAMP = "missing timestamp: %s"
+    NO_EDITOR         = "no editor is available: %s"
+    PROGRAM_ABORT     = "external program was aborted: %s"
+    UNKNOWN_KEYWORD   = "unknown keyword: %s"
+    INVALID_TIMESTAMP_PATTERN = "invalid timestamp pattern: %s"
+    NO_CONF_FILE      = "no configuration file: %s"
+    NO_TEMPLATE_FILE  = "no template file: %s"
+    INVALID_TIMESTAMP_PATTERN_AS_DATE = "invalid timestamp pattern as date: %s"
   end
 
   # :startdoc:
@@ -102,6 +103,16 @@ module Rbnotes
   class NoTemplateFileError < Error
     def initialize(filepath)
       super(ErrMsg::NO_TEMPLATE_FILE % filepath)
+    end
+  end
+
+  ##
+  # An error raised when the specified pattern cannot be converted
+  # into a date.
+  #
+  class InvalidTimestampPatternAsDateError < Error
+    def initialize(pattern)
+      super(ErrMsg::INVALID_TIMESTAMP_PATTERN_AS_DATE % pattern)
     end
   end
 
