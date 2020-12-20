@@ -7,6 +7,20 @@ require "io/console/size"
 require "unicode/display_width"
 
 module Rbnotes
+
+  class << self
+
+    ##
+    # Retrieves the singleton instance of Rbnotes::Utils class.
+    # Typical usage is as follows:
+    #
+    #   Rbnotes.utils.find_editor("emacsclient")
+    #
+    def utils
+      Utils.instance
+    end
+  end
+
   ##
   # Defines several utility methods those are intended to be used in
   # Rbnotes classes.
@@ -209,42 +223,13 @@ module Rbnotes
       patterns = []
       while args.size > 0
         arg = args.shift
-        if ["today", "to", "yesterday", "ye",
-            "this_week", "tw", "last_week", "lw",
-            "this_month", "tm", "last_month", "lm"].include?(arg)
-          patterns.concat(Rbnotes.utils.expand_keyword(arg))
+        if KEYWORDS.include?(arg)
+          patterns.concat(expand_keyword(arg))
         else
           patterns << arg
         end
       end
       patterns.sort.uniq
-    end
-
-    ##
-    # Expands a keyword to timestamp strings.
-    #
-    # :call-seq:
-    #     expand_keyword(keyword as String) -> Array of timestamp Strings
-    #
-    def expand_keyword(keyword)
-      patterns = []
-      case keyword
-      when "today", "to"
-        patterns << timestamp_pattern(Date.today)
-      when "yesterday", "ye"
-        patterns << timestamp_pattern(Date.today.prev_day)
-      when "this_week", "tw"
-        patterns.concat(dates_in_this_week.map { |d| timestamp_pattern(d) })
-      when "last_week", "lw"
-        patterns.concat(dates_in_last_week.map { |d| timestamp_pattern(d) })
-      when "this_month", "tm"
-        patterns.concat(dates_in_this_month.map { |d| timestamp_pattern(d) })
-      when "last_month", "lm"
-        patterns.concat(dates_in_last_month.map { |d| timestamp_pattern(d) })
-      else
-        raise UnknownKeywordError, keyword
-      end
-      patterns
     end
 
     ##
@@ -329,6 +314,39 @@ module Rbnotes
         end
       }.compact
     end
+
+    ##
+    # Expands a keyword to timestamp strings.
+    #
+    # :call-seq:
+    #     expand_keyword(keyword as String) -> Array of timestamp Strings
+    #
+    def expand_keyword(keyword)
+      patterns = []
+      case keyword
+      when "today", "to"
+        patterns << timestamp_pattern(Date.today)
+      when "yesterday", "ye"
+        patterns << timestamp_pattern(Date.today.prev_day)
+      when "this_week", "tw"
+        patterns.concat(dates_in_this_week.map { |d| timestamp_pattern(d) })
+      when "last_week", "lw"
+        patterns.concat(dates_in_last_week.map { |d| timestamp_pattern(d) })
+      when "this_month", "tm"
+        patterns.concat(dates_in_this_month.map { |d| timestamp_pattern(d) })
+      when "last_month", "lm"
+        patterns.concat(dates_in_last_month.map { |d| timestamp_pattern(d) })
+      else
+        raise UnknownKeywordError, keyword
+      end
+      patterns
+    end
+
+    KEYWORDS = %w(
+      today to yesterday ye
+      this_week tw last_week lw
+      this_month tm last_month lm
+    )
 
     def search_in_path(name)
       search_paths = ENV["PATH"].split(":")
