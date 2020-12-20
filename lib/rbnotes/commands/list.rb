@@ -67,44 +67,24 @@ module Rbnotes::Commands
         end
       end
 
-      patterns = nil
-      if @opts[:enum_week]
-        arg = args.shift || Textrepo::Timestamp.now[0, 8]
-        case arg.size
-        when "yyyymodd".size, "yyyymoddhhmiss".size, "yyyymoddhhmiss_sfx".size
-          stamp_str = "#{arg}000000"[0, 14]
-          timestamp = Textrepo::Timestamp.parse_s(stamp_str)
-        when "modd".size
-          this_year = Time.now.year.to_s
-          stamp_str = "#{this_year}#{arg}000000"
-          begin
-            timestamp = Textrepo::Timestamp.parse_s(stamp_str)
-          rescue Textrepo::InvalidTimestampStringError => _e
-            raise InvalidTimestampPatternAsDateError, arg
-          end
-        else
-          raise InvalidTimestampPatternAsDateError, args.unshift(arg)
-        end
-        patterns = Rbnotes.utils.timestamp_patterns_in_week(timestamp)
-      else
-        patterns = Rbnotes.utils.expand_keyword_in_args(args)
-      end
+      utils = Rbnotes.utils
+      patterns = utils.read_timestamp_patterns(args, enum_week: @opts[:enum_week])
 
       @repo = Textrepo.init(conf)
-      notes = Rbnotes.utils.find_notes(patterns, @repo)
+      notes = utils.find_notes(patterns, @repo)
       output = []
       if @opts[:verbose]
         collect_timestamps_by_date(notes).each { |date, timestamps|
           output << "#{date} (#{timestamps.size})"
           timestamps.each { |timestamp|
             pad = "  "
-            output << Rbnotes.utils.make_headline(timestamp,
+            output << utils.make_headline(timestamp,
                                                   @repo.read(timestamp), pad)
           }
         }
       else
         notes.each { |timestamp|
-          output << Rbnotes.utils.make_headline(timestamp,
+          output << utils.make_headline(timestamp,
                                                 @repo.read(timestamp))
         }
       end

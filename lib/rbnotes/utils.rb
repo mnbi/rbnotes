@@ -118,6 +118,65 @@ module Rbnotes
     end
 
     ##
+    # Reads timestamp patterns in an array of arguments.  It supports
+    # keywords expansion and enumeration of week.  The function is
+    # intended to be used from Commands::List#execute and
+    # Commands::Pick#execute.
+    #
+    def read_timestamp_patterns(args, enum_week: false)
+      patterns = nil
+      if enum_week
+        arg = args.shift
+        begin
+          patterns = timestamp_patterns_in_week(arg.dup)
+        rescue InvalidTimestampPatternAsDateError => _e
+          raise InvalidTimestampPatternAsDateError, args.unshift(arg)
+        end
+      else
+        patterns = expand_keyword_in_args(args)
+      end
+      patterns
+    end
+
+    ##
+    # Enumerates all timestamp patterns in a week which contains a
+    # given timestamp as a day of the week.
+    #
+    # The argument must be one of the followings:
+    #   - "yyyymodd" (eg. "20201220")
+    #   - "yymoddhhmiss" (eg. "20201220120048")
+    #   - "yymoddhhmiss_sfx" (eg. "20201220120048_012")
+    #   - "modd" (eg. "1220") (assums in the current year)
+    #   - nil (assumes today)
+    #
+    # :call-seq:
+    #     timestamp_patterns_in_week(String) -> [Array of Strings]
+    #
+    def timestamp_patterns_in_week(arg)
+      date_str = arg || Textrepo::Timestamp.now[0, 8]
+
+      case date_str.size
+      when "yyyymodd".size
+        # nothing to do
+      when "yyyymoddhhmiss".size, "yyyymoddhhmiss_sfx".size
+        date_str = date_str[0, 8]
+      when "modd".size
+        this_year = Time.now.year.to_s
+        date_str = "#{this_year}#{date_str}"
+      else
+        raise InvalidTimestampPatternAsDateError, arg
+      end
+
+      begin
+        date = Date.parse(date_str)
+      rescue Date::Error => _e
+        raise InvalidTimestampPatternAsDateError, arg
+      end
+
+      dates_in_week(date).map { |date| timestamp_pattern(date) }
+    end
+
+    ##
     # Parses the given arguments and expand keywords if found.  Each
     # of the arguments is assumed to represent a timestamp pattern (or
     # a keyword to be expand into several timestamp pattern).  Returns
@@ -143,7 +202,7 @@ module Rbnotes
     #
     # :call-seq:
     #   expand_keyword_in_args(Array of Strings) -> Array of Strings
-
+    #
     def expand_keyword_in_args(args)
       return [nil] if args.empty?
 
@@ -166,14 +225,14 @@ module Rbnotes
     #
     # :call-seq:
     #     expand_keyword(keyword as String) -> Array of timestamp Strings
-
+    #
     def expand_keyword(keyword)
       patterns = []
       case keyword
       when "today", "to"
-        patterns << timestamp_pattern(date_of_today)
+        patterns << timestamp_pattern(Date.today)
       when "yesterday", "ye"
-        patterns << timestamp_pattern(date_of_yesterday)
+        patterns << timestamp_pattern(Date.today.prev_day)
       when "this_week", "tw"
         patterns.concat(dates_in_this_week.map { |d| timestamp_pattern(d) })
       when "last_week", "lw"
@@ -233,17 +292,6 @@ module Rbnotes
       }.flatten.sort{ |a, b| b <=> a }.uniq
     end
 
-    ##
-    # Enumerates all timestamp patterns in a week which contains a
-    # given timestamp as a day of the week.
-    #
-    # :call-seq:
-    #     timestamp_patterns_in_week(timestamp) -> [Array of Strings]
-
-    def timestamp_patterns_in_week(timestamp)
-      dates_in_week(start_date_in_the_week(timestamp.time)).map { |date| timestamp_pattern(date) }
-    end
-
     # :stopdoc:
 
     private
@@ -299,58 +347,40 @@ module Rbnotes
       date.strftime("%Y%m%d")
     end
 
-    def date_of_today
-      date(Time.now)
-    end
-
-    def date_of_yesterday
-      date(Time.now).prev_day
-    end
-
     def date(time)
       Date.new(time.year, time.mon, time.day)
     end
 
     def dates_in_this_week
-      dates_in_week(start_date_in_this_week)
+      dates_in_week(Date.today)
     end
 
     def dates_in_last_week
-      dates_in_week(start_date_in_last_week)
+      dates_in_week(Date.today.prev_day(7))
     end
 
-    def start_date_in_this_week
-      start_date_in_the_week(Time.now)
-    end
-
-    def start_date_in_last_week
-      start_date_in_this_week.prev_day(7)
-    end
-
-    def start_date_in_the_week(time)
-      parts = [:year, :mon, :day].map { |sym| time.send(sym) }
-      Date.new(*parts).prev_day(wday(time))
-    end
-
-    def wday(time)
-      (time.wday - 1) % 7
-    end
-
-    def dates_in_week(start_date)
+    def dates_in_week(date)
+      start_date = start_date_of_week(date)
       dates = [start_date]
       1.upto(6) { |i| dates << start_date.next_day(i) }
       dates
     end
 
-    def dates_in_this_month
+    def start_date_of_week(date)
+      # week day in monday start calendar
+      date.prev_day((date.wday - 1) % 7)
+    end
+
+    def first_date_of_this_month
       today = Time.now
-      first_date = date(Time.new(today.year, today.mon, 1))
-      dates_in_month(first_date)
+      date(Time.new(today.year, today.mon, 1))
+    end
+
+    def dates_in_this_month
+      dates_in_month(first_date_of_this_month)
     end
 
     def dates_in_last_month
-      today = Time.now
-      first_date_of_this_month = date(Time.new(today.year, today.mon, 1))
       dates_in_month(first_date_of_this_month.prev_month)
     end
 
