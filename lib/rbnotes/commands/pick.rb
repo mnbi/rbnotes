@@ -10,12 +10,26 @@ module Rbnotes::Commands
     end
 
     def execute(args, conf)
-      patterns = Rbnotes.utils.expand_keyword_in_args(args)
+      @opts = {}
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-w", "--week"
+          @opts[:enum_week] = true
+        else
+          args.unshift(arg)
+          break
+        end
+      end
+
+      utils = Rbnotes.utils
+      patterns = utils.read_timestamp_patterns(args, enum_week: @opts[:enum_week])
+
       @repo = Textrepo.init(conf)
 
       list = []
-      Rbnotes.utils.find_notes(patterns, @repo).each { |timestamp|
-        list << Rbnotes.utils.make_headline(timestamp, @repo.read(timestamp))
+      utils.find_notes(patterns, @repo).each { |timestamp|
+        list << utils.make_headline(timestamp, @repo.read(timestamp))
       }
 
       picker = conf[:picker]
