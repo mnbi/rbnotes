@@ -1,6 +1,6 @@
 # Rbnotes
 
-[![Build Status](https://travis-ci.org/mnbi/rbnotes.svg?branch=main)](https://travis-ci.org/mnbi/rbnotes)
+[![Build Status](https://github.com/mnbi/rbnotes/workflows/Build/badge.svg)](https://github.com/mnbi/rbnotes/actions?query=workflow%3A"Build")
 
 Rbnotes is a simple utility to write a note in the single repository.
 
