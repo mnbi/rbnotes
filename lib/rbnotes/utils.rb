@@ -122,13 +122,20 @@ module Rbnotes
     # line arguments.  When no argument is given, try to read from
     # STDIN.
     #
+    # When multiple strings those point the identical time are
+    # included the arguments (passed or read form STDIN), the
+    # redundant strings will be removed.
+    #
+    # The order of the arguments will be preserved into the return
+    # value, even if the redundant strings were removed.
+    #
     # :call-seq:
     #   read_multiple_timestamps(args) -> [String]
 
     def read_multiple_timestamps(args)
       strings = args.size < 1 ? read_multiple_args($stdin) : args
       raise NoArgumentError if (strings.nil? || strings.empty?)
-      strings.map { |str| Textrepo::Timestamp.parse_s(str) }
+      strings.uniq.map { |str| Textrepo::Timestamp.parse_s(str) }
     end
 
     ##

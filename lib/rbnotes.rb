@@ -10,9 +10,4 @@ module Rbnotes
   require_relative "rbnotes/commands"
   require_relative "rbnotes/statistics"
 
-  class << self
-    def utils
-      Utils.instance
-    end
-  end
 end
