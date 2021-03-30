@@ -86,7 +86,7 @@ class RbnotesUtilsTest < Minitest::Test
   end
 
   # read_multiple_timestamps(args)
-  def test_read_multiple_timestamp_returns_an_array_of_timestamps
+  def test_read_multiple_timestamps_returns_an_array_of_timestamps
     timestamp0 = Textrepo::Timestamp.now
     stamp_args = [timestamp0, timestamp0.succ]
     args = stamp_args.map(&:to_s)
@@ -95,6 +95,22 @@ class RbnotesUtilsTest < Minitest::Test
     stamps = Rbnotes.utils.read_multiple_timestamps([])
 
     assert_equal stamp_args, stamps.sort
+  end
+
+  # for issue #98
+  def test_read_multiple_timestamps_removes_redundant_args
+    s0 = "2021-03-30_12:53:00"
+    s1 = "2020-01-01_11:22:33"
+    s2 = "2021-03-01_22:33:44"
+    args = [s0, s1, s0, s1, s2, s2].map{ |s| s.tr("-_:", "") }
+    stamps = Rbnotes.utils.read_multiple_timestamps(args)
+
+    assert_equal args.uniq.size, stamps.size
+
+    # check the order
+    assert_equal s0.tr("-_:", ""), stamps[0].to_s
+    assert_equal s1.tr("-_:", ""), stamps[1].to_s
+    assert_equal s2.tr("-_:", ""), stamps[2].to_s
   end
 
   # timestamps_in_week(timestamp)

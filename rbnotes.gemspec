@@ -25,6 +25,6 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "textrepo", "~> 0.5.4"
+  spec.add_dependency "textrepo", "~> 0.5.8"
   spec.add_dependency "unicode-display_width", "~> 1.7"
 end

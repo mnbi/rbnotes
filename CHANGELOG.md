@@ -5,8 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+## [0.4.13] - 2021-03-30
+### Changed
 - Use GitHub/Actions instead of Travis-CI.
 - Add `--week` option to `pick` command. (#88)
+
+### Fixed
+- Fix issue #98: remove redundant args
+  (Rbnotes::Utils.read_multiple_timestamps). (#98)
+- Update `textrepo`. -> 0.5.8 (#97)
 
 ## [0.4.12] - 2020-12-18
 ### Changed
