@@ -73,4 +73,12 @@ class RbnotesCommandsShowTest < Minitest::Test
     }
   end
 
+  # issue #100
+  def test_it_raises_missing_timestamp_when_valid_but_missing_timestamp_is_passed
+    arg = "2999-12-31_23:59:59".tr("-_:", "")
+    assert_raises(Rbnotes::MissingTimestampError) {
+      execute(:show, [arg], @conf_ro)
+    }
+  end
+
 end

@@ -11,7 +11,8 @@ module Rbnotes::Commands
   #     "20201106112600_012" : with suffix
   #
   # If no argument is passed, reads the standard input for arguments.
-
+  # If a specified timestamp does not exist in the repository as a key,
+  # Rbnotes::MissingTimestampError will occur.
   class Show < Command
 
     def description             # :nodoc:
@@ -22,7 +23,15 @@ module Rbnotes::Commands
       stamps = Rbnotes.utils.read_multiple_timestamps(args)
       repo = Textrepo.init(conf)
 
-      content = stamps.map { |stamp| [stamp, repo.read(stamp)] }.to_h
+      content = stamps.map { |stamp|
+        begin
+          text = repo.read(stamp)
+        rescue Textrepo::MissingTimestampError => _
+          raise Rbnotes::MissingTimestampError, stamp
+        end
+
+        [stamp, text]
+      }.to_h
 
       pager = conf[:pager]
       unless pager.nil?
