@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- Nothing to record here.
+
+## [0.4.14] - 2021-04-10
+- Add `-n` option to `show` command. (#102)
 - Fix issue #100: modify to catch Textrepo::MissingTimestampError.
 
 ## [0.4.13] - 2021-03-30
