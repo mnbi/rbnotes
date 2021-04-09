@@ -86,6 +86,7 @@ HELP
           @opts[:num_of_lines] = num_of_lines
         else
           args.unshift(arg)
+          break
         end
       end
     end
