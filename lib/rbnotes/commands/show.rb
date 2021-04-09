@@ -5,6 +5,9 @@ module Rbnotes::Commands
   # argument must be a string which can be converted into
   # Textrepo::Timestamp object.
   #
+  # Accepts an option with `-n NUMBER` (or `--num-of-lines`), to show
+  # the first NUMBER lines of the content of each note.
+  #
   # A string for Textrepo::Timestamp must be:
   #
   #     "20201106112600"     : year, date, time and sec
@@ -20,6 +23,23 @@ module Rbnotes::Commands
     end
 
     def execute(args, conf)
+      @opts = {}
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-n", "--num-of-lines"
+          num_of_lines = args.shift
+          raise ArgumentError, "missing number: %s" % args.unshift(arg) if num_of_lines.nil? 
+
+          num_of_lines = num_of_lines.to_i
+          raise ArgumentError, "illegal number (must be greater than 0): %d" % num_of_lines unless num_of_lines > 0
+
+          @opts[:num_of_lines] = num_of_lines
+        else
+          args.unshift(arg)
+        end
+      end
+
       stamps = Rbnotes.utils.read_multiple_timestamps(args)
       repo = Textrepo.init(conf)
 
@@ -30,7 +50,12 @@ module Rbnotes::Commands
           raise Rbnotes::MissingTimestampError, stamp
         end
 
-        [stamp, text]
+        lines = text.size
+        if @opts[:num_of_lines].to_i > 0
+          lines = [@opts[:num_of_lines], lines].min
+        end
+
+        [stamp, text[0, lines]]
       }.to_h
 
       pager = conf[:pager]
@@ -44,10 +69,13 @@ module Rbnotes::Commands
     def help                    # :nodoc:
       puts <<HELP
 usage:
-    #{Rbnotes::NAME} show [TIMESTAMP...]
+    #{Rbnotes::NAME} show [(-n|--num-of-lines) NUMBER] [TIMESTAMP...]
 
 Show the content of given notes.  TIMESTAMP must be a fully qualified
 one, such "20201016165130" or "20201016165130_012" if it has a suffix.
+
+Accept an option with `-n NUMBER` (or `--num-of-lines`), to show the
+first NUMBER lines of the content of each note.
 
 The command try to read its argument from the standard input when no
 argument was passed in the command line.
