@@ -24,21 +24,7 @@ module Rbnotes::Commands
 
     def execute(args, conf)
       @opts = {}
-      while args.size > 0
-        arg = args.shift
-        case arg
-        when "-n", "--num-of-lines"
-          num_of_lines = args.shift
-          raise ArgumentError, "missing number: %s" % args.unshift(arg) if num_of_lines.nil? 
-
-          num_of_lines = num_of_lines.to_i
-          raise ArgumentError, "illegal number (must be greater than 0): %d" % num_of_lines unless num_of_lines > 0
-
-          @opts[:num_of_lines] = num_of_lines
-        else
-          args.unshift(arg)
-        end
-      end
+      parse_opts(args)
 
       stamps = Rbnotes.utils.read_multiple_timestamps(args)
       repo = Textrepo.init(conf)
@@ -85,6 +71,24 @@ HELP
     # :stopdoc:
 
     private
+
+    def parse_opts(args)
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-n", "--num-of-lines"
+          num_of_lines = args.shift
+          raise ArgumentError, "missing number: %s" % args.unshift(arg) if num_of_lines.nil?
+
+          num_of_lines = num_of_lines.to_i
+          raise ArgumentError, "illegal number (must be greater than 0): %d" % num_of_lines unless num_of_lines > 0
+
+          @opts[:num_of_lines] = num_of_lines
+        else
+          args.unshift(arg)
+        end
+      end
+    end
 
     def puts_with_pager(pager, output)
       require "open3"
