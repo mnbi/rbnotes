@@ -9,20 +9,14 @@ module Rbnotes::Commands
     end
 
     def execute(args, conf)
+      @opts = {}
+      parse_opts(args)
+
       report = :total
-      while args.size > 0
-        arg = args.shift
-        case arg
-        when "-y", "--yearly"
-          report = :yearly
-          break
-        when "-m", "--monthly"
-          report = :monthly
-          break
-        else
-          args.unshift(arg)
-          raise ArgumentError, "invalid option or argument: %s" % args.join(" ")
-        end
+      if @opts[:yearly]
+        report = :yearly
+      elsif @opts[:monthly]
+        report = :monthly
       end
 
       stats = Rbnotes::Statistics.new(conf)
@@ -50,6 +44,31 @@ Show statistics.
 In the version #{Rbnotes::VERSION}, only number of notes is supported.
 HELP
     end
+
+    # :stopdoc:
+
+    private
+
+    def parse_opts(args)
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-y", "--yearly"
+          @opts[:yearly] = true
+          @opts[:monthly] = false
+          break
+        when "-m", "--monthly"
+          @opts[:yearly] = false
+          @opts[:monthly] = true
+          break
+        else
+          args.unshift(arg)
+          raise ArgumentError, "invalid option or argument: %s" % args.join(" ")
+        end
+      end
+    end
+
+    # :startdoc:
 
   end
 end

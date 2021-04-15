@@ -54,18 +54,7 @@ module Rbnotes::Commands
 
     def execute(args, conf)
       @opts = {}
-      while args.size > 0
-        arg = args.shift
-        case arg
-        when "-w", "--week"
-          @opts[:enum_week] = true
-        when "-v", "--verbose"
-          @opts[:verbose] = true
-        else
-          args.unshift(arg)
-          break
-        end
-      end
+      parse_opts(args)
 
       utils = Rbnotes.utils
       patterns = utils.read_timestamp_patterns(args, enum_week: @opts[:enum_week])
@@ -134,6 +123,21 @@ HELP
     # :stopdoc:
 
     private
+
+    def parse_opts(args)
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-w", "--week"
+          @opts[:enum_week] = true
+        when "-v", "--verbose"
+          @opts[:verbose] = true
+        else
+          args.unshift(arg)
+          break
+        end
+      end
+    end
 
     def collect_timestamps_by_date(timestamps)
       result = {}

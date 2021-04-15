@@ -11,16 +11,7 @@ module Rbnotes::Commands
 
     def execute(args, conf)
       @opts = {}
-      while args.size > 0
-        arg = args.shift
-        case arg
-        when "-w", "--week"
-          @opts[:enum_week] = true
-        else
-          args.unshift(arg)
-          break
-        end
-      end
+      parse_opts(args)
 
       utils = Rbnotes.utils
       patterns = utils.read_timestamp_patterns(args, enum_week: @opts[:enum_week])
@@ -61,5 +52,25 @@ is specified, it will behave as same as "list" command.
 
 HELP
     end
+
+    # :stopdoc:
+
+    private
+
+    def parse_opts(args)
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-w", "--week"
+          @opts[:enum_week] = true
+        else
+          args.unshift(arg)
+          break
+        end
+      end
+    end
+
+    # :startdoc:
+
   end
 end
