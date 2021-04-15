@@ -103,6 +103,19 @@ module Rbnotes
       tmpfile
     end
 
+    # Acceptable delimiters to separate a timestamp string for human
+    # being to read and input easily.
+    #
+    # Here is some examples:
+    #
+    #   - "2021-04-15 15:34:56" -> "20210415153456" (a timestamp string)
+    #   - "2020-04-15_15:34:56" -> (same as above)
+    #   - "2020-04-15-15-34-56" -> (same as above)
+    #   - "2020 04 15 15 34 56" -> (same as above)
+    #   - "2020-04-15" -> "20200415" (a timestamp pattern)
+
+    TIMESTAMP_DELIMITERS = /[-:_\s]/
+
     ##
     # Generates a Textrepo::Timestamp object from a String which comes
     # from the command line arguments.  When no argument is given,
@@ -114,6 +127,8 @@ module Rbnotes
     def read_timestamp(args)
       str = args.shift || read_arg($stdin)
       raise NoArgumentError if str.nil?
+
+      str = remove_delimiters_from_timestamp_string(str)
       Textrepo::Timestamp.parse_s(str)
     end
 
@@ -135,7 +150,10 @@ module Rbnotes
     def read_multiple_timestamps(args)
       strings = args.size < 1 ? read_multiple_args($stdin) : args
       raise NoArgumentError if (strings.nil? || strings.empty?)
-      strings.uniq.map { |str| Textrepo::Timestamp.parse_s(str) }
+      strings.uniq.map { |str|
+        str = remove_delimiters_from_timestamp_string(str)
+        Textrepo::Timestamp.parse_s(str)
+      }
     end
 
     ##
@@ -177,7 +195,13 @@ module Rbnotes
     #     timestamp_patterns_in_week(String) -> [Array of Strings]
     #
     def timestamp_patterns_in_week(arg)
-      date_str = arg || Textrepo::Timestamp.now[0, 8]
+      date_str = nil
+
+      if arg
+        date_str = remove_delimiters_from_timestamp_string(arg)
+      else
+        date_str = Textrepo::Timestamp.now[0, 8]
+      end
 
       case date_str.size
       when "yyyymodd".size
@@ -239,7 +263,7 @@ module Rbnotes
           patterns << arg
         end
       end
-      patterns.sort.uniq
+      patterns.uniq.sort
     end
 
     ##
@@ -323,6 +347,15 @@ module Rbnotes
           nil
         end
       }.compact
+    end
+
+    def remove_delimiters_from_timestamp_string(stamp_str) # :nodoc:
+      str = stamp_str.gsub(TIMESTAMP_DELIMITERS, "")
+      base_size = "yyyymiddhhmoss".size
+      if str.size > base_size   # when suffix is specified
+        str = str[0...base_size] + "_" + str[base_size..-1]
+      end
+      str
     end
 
     ##

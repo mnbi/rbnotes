@@ -12,18 +12,7 @@ module Rbnotes::Commands
 
     def execute(args, conf)
       @opts = {}
-      while args.size > 0
-        arg = args.shift
-        case arg.to_s
-        when ""                 # no options
-          break
-        when "-d", "--deve-commands"
-          @opts[:print_deve_commands] = true
-        else                    # invalid options or args
-          args.unshift(arg)
-          raise ArgumentError, "invalid option or argument: %s" % args.join(" ")
-        end
-      end
+      parse_opts(args)
 
       puts commands(@opts[:print_deve_commands]).join(" ")
     end
@@ -42,7 +31,23 @@ HELP
     end
 
     # :stopdoc:
+
     private
+
+    def parse_opts(args)
+      while args.size > 0
+        arg = args.shift
+        case arg.to_s
+        when ""                 # no options
+          break
+        when "-d", "--deve-commands"
+          @opts[:print_deve_commands] = true
+        else                    # invalid options or args
+          args.unshift(arg)
+          raise ArgumentError, "invalid option or argument: %s" % args.join(" ")
+        end
+      end
+    end
 
     ##
     # Enumerates all command names.

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 - Nothing to record here.
 
+## [0.4.15] - 2021-04-15
+- Enable to use delimiters within a timestamp string. (#104)
+- Fix issue #105: `list` ignores the 2nd arg when specified `-w`
+  option.
+
 ## [0.4.14] - 2021-04-10
 - Add `-n` option to `show` command. (#102)
 - Fix issue #100: modify to catch Textrepo::MissingTimestampError.

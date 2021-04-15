@@ -29,16 +29,7 @@ module Rbnotes::Commands
 
     def execute(args, conf)
       @opts = {}
-      while args.size > 0
-        arg = args.shift
-        case arg
-        when "-m", "--use-mtime"
-          @opts[:use_mtime] = true
-        else
-          args.unshift(arg)
-          break
-        end
-      end
+      parse_opts(args)
 
       file = args.shift
       unless file.nil?
@@ -116,5 +107,25 @@ If birthtime is not available on the system, use mtime (modification
 time).
 HELP
     end
+
+    # :stopdoc:
+
+    private
+
+    def parse_opts(args)
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-m", "--use-mtime"
+          @opts[:use_mtime] = true
+        else
+          args.unshift(arg)
+          break
+        end
+      end
+    end
+
+    # :startdoc:
+
   end
 end

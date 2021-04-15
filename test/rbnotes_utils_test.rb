@@ -125,7 +125,7 @@ class RbnotesUtilsTest < Minitest::Test
       "2020-11-21",             # Sat
       "2020-11-22",             # Sun
     ].map { |d| d.tr("-", "") }
-    days = Rbnotes.utils.timestamp_patterns_in_week(a_day)
+    days = Rbnotes.utils.timestamp_patterns_in_week(a_day.to_s)
     refute days.nil?
     assert_equal 7, days.size
 

@@ -34,22 +34,7 @@ module Rbnotes::Commands
 
     def execute(args, conf)
       @opts = {}
-      while args.size > 0
-        arg = args.shift
-        case arg
-        when "-t", "--timestamp"
-          stamp_str = args.shift
-          raise ArgumentError, "missing timestamp: %s" % args.unshift(arg) if stamp_str.nil?
-          stamp_str = complement_timestamp_pattern(stamp_str)
-          @opts[:timestamp] = Textrepo::Timestamp.parse_s(stamp_str)
-        when "-f", "--template-file"
-          template_path = args.shift
-          @opts[:template] = template_path
-        else
-          args.unshift(arg)
-          break
-        end
-      end
+      parse_opts(args)
 
       stamp = @opts[:timestamp] || Textrepo::Timestamp.new(Time.now)
 
@@ -116,7 +101,28 @@ HELP
     end
 
     # :stopdoc:
+
     private
+
+    def parse_opts(args)
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-t", "--timestamp"
+          stamp_str = args.shift
+          raise ArgumentError, "missing timestamp: %s" % args.unshift(arg) if stamp_str.nil?
+          stamp_str = complement_timestamp_pattern(stamp_str)
+          @opts[:timestamp] = Textrepo::Timestamp.parse_s(stamp_str)
+        when "-f", "--template-file"
+          template_path = args.shift
+          @opts[:template] = template_path
+        else
+          args.unshift(arg)
+          break
+        end
+      end
+    end
+
     def complement_timestamp_pattern(pattern)
       stamp_str = nil
       case pattern.to_s.size

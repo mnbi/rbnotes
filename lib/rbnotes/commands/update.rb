@@ -32,16 +32,7 @@ module Rbnotes::Commands
 
     def execute(args, conf)
       @opts = {}
-      while args.size > 0
-        arg = args.shift
-        case arg
-        when "-k", "--keep"
-          @opts[:keep_timestamp] = true
-        else
-          args.unshift(arg)
-          break
-        end
-      end
+      parse_opts(args)
 
       target_stamp = Rbnotes.utils.read_timestamp(args)
       editor = Rbnotes.utils.find_editor(conf[:editor])
@@ -100,5 +91,25 @@ editor program will be searched as same as add command.  If none of
 editors is available, the execution fails.
 HELP
     end
+
+    # :stopdoc:
+
+    private
+
+    def parse_opts(args)
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-k", "--keep"
+          @opts[:keep_timestamp] = true
+        else
+          args.unshift(arg)
+          break
+        end
+      end
+    end
+
+    # :startdoc:
+
   end
 end
