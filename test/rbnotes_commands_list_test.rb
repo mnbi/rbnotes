@@ -169,7 +169,23 @@ class RbnotesCommandsListTest < Minitest::Test
     assert_equal expected, result.lines.size
   end
 
+  # [issue #105]
+  def test_it_accepts_multiple_args_with_w_option
+    conf = @conf_rw.dup
+    conf[:repository_name] = "repo_list_w_option"
+
+    prepare_this_week_notes(["this week"], conf)
+    prepare_last_week_notes(["last week"], conf)
+
+    to = today_stamp_pattern
+    dbw = timestamp_pattern_of_the_day_before_a_week
+
+    result = execute(:list, ["-w", to, dbw], conf)
+    assert_equal 14, result.lines.size
+  end
+
   private
+
   def extract_subject(file)
     content = File.readlines(file)
     content[0]
@@ -193,17 +209,17 @@ class RbnotesCommandsListTest < Minitest::Test
     prepare_note(ye_pattern, text, repo_path(@conf_rw))
   end
 
-  def prepare_this_week_notes(text)
+  def prepare_this_week_notes(text, conf = @conf_rw)
     this_week_stamp_patterns.each { |pat|
       stamp = "#{pat}010203"
-      prepare_note(stamp, text, repo_path(@conf_rw))
+      prepare_note(stamp, text, repo_path(conf))
     }
   end
 
-  def prepare_last_week_notes(text)
+  def prepare_last_week_notes(text, conf = @conf_rw)
     last_week_stamp_patterns.each { |pat|
       stamp = "#{pat}040506"
-      prepare_note(stamp, text, repo_path(@conf_rw))
+      prepare_note(stamp, text, repo_path(conf))
     }
   end
 
@@ -238,4 +254,11 @@ class RbnotesCommandsListTest < Minitest::Test
     start_of_this_week = Date.new(to.year, to.mon, to.day).prev_day(wday(to))
     dates_in_week(start_of_this_week.prev_day(7))
   end
+
+  def timestamp_pattern_of_the_day_before_a_week
+    to = Time.now
+    date_before_week = Date.new(to.year, to.mon, to.day).prev_day(7)
+    date_before_week.strftime("%Y%m%d")
+  end
+
 end

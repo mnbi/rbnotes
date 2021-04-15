@@ -147,11 +147,14 @@ module Rbnotes
     def read_timestamp_patterns(args, enum_week: false)
       patterns = nil
       if enum_week
-        arg = args.shift
-        begin
-          patterns = timestamp_patterns_in_week(arg.dup)
-        rescue InvalidTimestampPatternAsDateError => _e
-          raise InvalidTimestampPatternAsDateError, args.unshift(arg)
+        patterns = []
+        while args.size > 0
+          arg = args.shift
+          begin
+            patterns.concat(timestamp_patterns_in_week(arg.dup))
+          rescue InvalidTimestampPatternAsDateError => _e
+            raise InvalidTimestampPatternAsDateError, args.unshift(arg)
+          end
         end
       else
         patterns = expand_keyword_in_args(args)
