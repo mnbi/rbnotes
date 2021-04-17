@@ -10,6 +10,8 @@ module Rbnotes::Commands
       "List notes"
     end
 
+    DEFAULT_BEHAVIOR = "today"  # :nodoc:
+
     ##
     # Shows a list of notes in the repository.  Arguments are
     # optional.  If several args are passed, each of them must be a
@@ -56,6 +58,11 @@ module Rbnotes::Commands
       @opts = {}
       parse_opts(args)
 
+      if args.empty?
+        default_behavior = conf[:list_default] || DEFAULT_BEHAVIOR
+        args << default_behavior
+      end
+
       utils = Rbnotes.utils
       patterns = utils.read_timestamp_patterns(args, enum_week: @opts[:enum_week])
 
@@ -68,13 +75,13 @@ module Rbnotes::Commands
           timestamps.each { |timestamp|
             pad = "  "
             output << utils.make_headline(timestamp,
-                                                  @repo.read(timestamp), pad)
+                                          @repo.read(timestamp), pad)
           }
         }
       else
         notes.each { |timestamp|
           output << utils.make_headline(timestamp,
-                                                @repo.read(timestamp))
+                                        @repo.read(timestamp))
         }
       end
       puts output

@@ -9,9 +9,16 @@ module Rbnotes::Commands
       "Pick a timestamp with a picker program"
     end
 
+    DEFAULT_BEHAVIOR = "today"  # :nodoc:
+
     def execute(args, conf)
       @opts = {}
       parse_opts(args)
+
+      if args.empty?
+        default_behavior = conf[:list_default] || DEFAULT_BEHAVIOR
+        args << default_behavior
+      end
 
       utils = Rbnotes.utils
       patterns = utils.read_timestamp_patterns(args, enum_week: @opts[:enum_week])
