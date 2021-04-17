@@ -10,10 +10,10 @@ class RbnotesCommandsListTest < Minitest::Test
     @conf_rw[:repository_name] = "repo_list_test"
   end
 
-  def test_that_it_can_list_up_all_notes
+  def test_that_it_can_list_up_all_notes_using_all_kw
     files = Dir.glob("#{repo_path(CONF_RO)}/**/*.md").map{|f| File.basename(f)}
 
-    result = execute(:list, [], CONF_RO)
+    result = execute(:list, ["all"], CONF_RO)
 
     refute result.empty?
     result.lines.each { |line|
@@ -184,6 +184,22 @@ class RbnotesCommandsListTest < Minitest::Test
     assert_equal 14, result.lines.size
   end
 
+  # [issue #109]
+  def test_it_change_its_default_behavoir_with_list_default_setting
+    conf = @conf_rw.dup
+    conf[:repository_name] = "repo_list_default_setting"
+    conf[:list_default] = "ye"
+
+    str = Time.now.to_s
+
+    prepare_today_note([str], conf)
+    prepare_yesterday_note(["Yesterday"], conf)
+
+    result = execute(:list, [], conf)
+    assert result.include?("Yesterday")
+    refute result.include?(str)
+  end
+
   private
 
   def extract_subject(file)
@@ -197,16 +213,16 @@ class RbnotesCommandsListTest < Minitest::Test
     assert_equal files.size, result.lines.size
   end
 
-  def prepare_today_note(text)
+  def prepare_today_note(text, conf = @conf_rw)
     today = Textrepo::Timestamp.new(Time.now).to_s
-    prepare_note(today, text, repo_path(@conf_rw))
+    prepare_note(today, text, repo_path(conf))
   end
 
   require "date"
 
-  def prepare_yesterday_note(text)
+  def prepare_yesterday_note(text, conf = @conf_rw)
     ye_pattern = "#{yesterday_stamp_pattern}010203"
-    prepare_note(ye_pattern, text, repo_path(@conf_rw))
+    prepare_note(ye_pattern, text, repo_path(conf))
   end
 
   def prepare_this_week_notes(text, conf = @conf_rw)

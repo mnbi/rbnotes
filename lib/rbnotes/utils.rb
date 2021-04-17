@@ -247,17 +247,18 @@ module Rbnotes
     #   - "last_week"  (or "lw")
     #   - "this_month" (or "tm")
     #   - "last_month" (or "lm")
+    #   - "all"
     #
     # :call-seq:
     #   expand_keyword_in_args(Array of Strings) -> Array of Strings
     #
     def expand_keyword_in_args(args)
-      return [nil] if args.empty?
-
       patterns = []
       while args.size > 0
         arg = args.shift
-        if KEYWORDS.include?(arg)
+        if arg == "all"
+          return [nil]
+        elsif KEYWORDS.include?(arg)
           patterns.concat(expand_keyword(arg))
         else
           patterns << arg

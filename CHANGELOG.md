@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 - Nothing to record here.
 
+## [0.4.16] - 2021-04-17
+- Add a new configuration setting to change the default behavior of
+  the `list` (and `pick`) command. (#109)
+
 ## [0.4.15] - 2021-04-15
 - Enable to use delimiters within a timestamp string. (#104)
 - Fix issue #105: `list` ignores the 2nd arg when specified `-w`
