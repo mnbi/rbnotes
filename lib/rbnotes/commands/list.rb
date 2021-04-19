@@ -58,7 +58,7 @@ module Rbnotes::Commands
       @opts = {}
       parse_opts(args)
 
-      if args.empty?
+      if args.empty? and !@opts[:enum_week]
         default_behavior = conf[:list_default] || DEFAULT_BEHAVIOR
         args << default_behavior
       end
@@ -90,12 +90,16 @@ module Rbnotes::Commands
     def help                    # :nodoc:
       puts <<HELP
 usage:
-    #{Rbnotes::NAME} list [-w|--week][STAMP_PATTERN|KEYWORD]
+    #{Rbnotes::NAME} list [OPTIONS] [STAMP_PATTERN|KEYWORD]
 
 Show a list of notes.  When no arguments, make a list with all notes
 in the repository.  When specified STAMP_PATTERN, only those match the
 pattern are listed.  Instead of STAMP_PATTERN, some KEYWORDs could be
 used.
+
+OPTIONS:
+    -v, --verbose
+    -w, --week
 
 STAMP_PATTERN must be:
 
@@ -113,6 +117,24 @@ KEYWORD:
     - "last_week"  (or "lw")
     - "this_month" (or "tm")
     - "last_month" (or "lm")
+
+An option "--verbose" is acceptable.  It specifies to counts number of
+notes by each day, then put it with the date before notes.  It looks
+like as follows:
+
+    2021-04-19 (3)
+      20210419134222: Foo
+      20210419120235: Bar
+      20210419110057: Baz
+    2021-04-18 (1)
+      20210418125353: Hoge
+          :
+
+When no STAMP_PATTERN or KEYWORD was specified, the behavior of this
+command could be specified with a configuration setting,
+":list_default:".  The value must be one of valid keywords.  If no
+settings was also given, this command would behave like "today" was
+specified as the setting.
 
 An option "--week" is also acceptable.  It specifies to enumerate all
 days of a week.  Typically, the option is used with a STAMP_PATTERN

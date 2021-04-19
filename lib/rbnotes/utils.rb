@@ -165,6 +165,7 @@ module Rbnotes
     def read_timestamp_patterns(args, enum_week: false)
       patterns = nil
       if enum_week
+        args.unshift(Time.now.strftime("%Y%m%d")) if args.size == 0
         patterns = []
         while args.size > 0
           arg = args.shift
