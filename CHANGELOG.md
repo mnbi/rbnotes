@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-- Nothing to record here.
+- Update the help text for the `list` command. (#112, #113)
+- Remove trailing spaces. (#108)
 
 ## [0.4.16] - 2021-04-17
 - Add a new configuration setting to change the default behavior of

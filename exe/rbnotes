@@ -21,7 +21,7 @@ class App
         file = args.shift
         raise ArgumentError, args.unshift(arg) if file.nil?
         file = File.expand_path(file)
-        raise ArgumentError, "no such file: %s" % file unless FileTest.exist?(file) 
+        raise ArgumentError, "no such file: %s" % file unless FileTest.exist?(file)
         @gopts[:conf_file] = file
       when "-v", "--version"
         args.clear
