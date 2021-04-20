@@ -18,7 +18,8 @@ module Rbnotes::Commands
     # timestamp pattern or a keyword.
     #
     # Any order of timestamp patterns and keywords mixture is
-    # acceptable.  The redundant patterns are just ignored.
+    # acceptable.  The redundant patterns or invalid patterns are just
+    # ignored.
     #
     # A timestamp pattern is a string which would match several
     # Timestamp objects.  A timestamp is an instance of
@@ -66,22 +67,21 @@ module Rbnotes::Commands
       utils = Rbnotes.utils
       patterns = utils.read_timestamp_patterns(args, enum_week: @opts[:enum_week])
 
-      @repo = Textrepo.init(conf)
-      notes = utils.find_notes(patterns, @repo)
+      repo = Textrepo.init(conf)
+      stamps = utils.find_notes(patterns, repo)
       output = []
       if @opts[:verbose]
-        collect_timestamps_by_date(notes).each { |date, timestamps|
+        collect_timestamps_by_date(stamps).each { |date, timestamps|
           output << "#{date} (#{timestamps.size})"
           timestamps.each { |timestamp|
             pad = "  "
             output << utils.make_headline(timestamp,
-                                          @repo.read(timestamp), pad)
+                                          repo.read(timestamp), pad)
           }
         }
       else
-        notes.each { |timestamp|
-          output << utils.make_headline(timestamp,
-                                        @repo.read(timestamp))
+        stamps.each { |timestamp|
+          output << utils.make_headline(timestamp, repo.read(timestamp))
         }
       end
       puts output

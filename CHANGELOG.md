@@ -5,20 +5,42 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- nothing to record here.
+
+## [0.4.17] - 2021-04-21
+### Added
+- Change for the `show` command to accept keywords. (#84)
+- Add `-r` option to the `show` command. (#110)
+  - which specifies to enable "raw" output mode.
+
+### Fixed
 - Update the help text for the `list` command. (#112, #113)
 - Remove trailing spaces. (#108)
+- Fix minor bugs:
+  - remove redundant use of an instance variable,
+  - change the behavior to exit when no notes found in the repo,
+    - `pick` and `show`
+  - change delimiter line size according to terminal column.
+    - `show`
 
 ## [0.4.16] - 2021-04-17
+### Added
 - Add a new configuration setting to change the default behavior of
   the `list` (and `pick`) command. (#109)
 
 ## [0.4.15] - 2021-04-15
+### Added
 - Enable to use delimiters within a timestamp string. (#104)
+
+### Fixed
 - Fix issue #105: `list` ignores the 2nd arg when specified `-w`
   option.
 
 ## [0.4.14] - 2021-04-10
+### Added
 - Add `-n` option to `show` command. (#102)
+
+### Fixed
 - Fix issue #100: modify to catch Textrepo::MissingTimestampError.
 
 ## [0.4.13] - 2021-03-30

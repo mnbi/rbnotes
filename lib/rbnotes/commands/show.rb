@@ -1,17 +1,12 @@
 module Rbnotes::Commands
 
   ##
-  # Shows the content of the notes specified by arguments.  Each
-  # argument must be a string which can be converted into
-  # Textrepo::Timestamp object.
+  # Shows the content of the notes specified by arguments.  Arguments
+  # should be timestamp patterns or keywords.  See the document for
+  # the `list` command to know about such arguments.
   #
   # Accepts an option with `-n NUMBER` (or `--num-of-lines`), to show
   # the first NUMBER lines of the content of each note.
-  #
-  # A string for Textrepo::Timestamp must be:
-  #
-  #     "20201106112600"     : year, date, time and sec
-  #     "20201106112600_012" : with suffix
   #
   # If no argument is passed, reads the standard input for arguments.
   # If a specified timestamp does not exist in the repository as a key,
@@ -26,8 +21,9 @@ module Rbnotes::Commands
       @opts = {}
       parse_opts(args)
 
-      stamps = Rbnotes.utils.read_multiple_timestamps(args)
       repo = Textrepo.init(conf)
+      stamps = read_timestamps(args, repo)
+      return if stamps.empty?
 
       content = stamps.map { |stamp|
         begin
@@ -45,7 +41,7 @@ module Rbnotes::Commands
       }.to_h
 
       pager = conf[:pager]
-      unless pager.nil?
+      unless pager.nil? or @opts[:raw]
         puts_with_pager(pager, make_output(content))
       else
         puts make_output(content)
@@ -55,13 +51,22 @@ module Rbnotes::Commands
     def help                    # :nodoc:
       puts <<HELP
 usage:
-    #{Rbnotes::NAME} show [(-n|--num-of-lines) NUMBER] [TIMESTAMP...]
+    #{Rbnotes::NAME} show [OPTIONS] [STAMP_PATTERN|KEYWORD...]
 
-Show the content of given notes.  TIMESTAMP must be a fully qualified
-one, such "20201016165130" or "20201016165130_012" if it has a suffix.
+Show the content of given notes.  It accepts timestamp patterns and
+keywords like the `list` (or `pick`) command.  See the help for the
+`list` command to know more about stamp patterns and keywords.
+
+OPTIONS:
+    -n, --num-of-lines NUMBER
+    -r, --raw
 
 Accept an option with `-n NUMBER` (or `--num-of-lines`), to show the
 first NUMBER lines of the content of each note.
+
+Also accepts `-r` (or `--raw`) option to specify to use "raw" output,
+which means no use any pager, no apply to any process to make output.
+The behavior is intended to be used within a pipeline.
 
 The command try to read its argument from the standard input when no
 argument was passed in the command line.
@@ -84,11 +89,24 @@ HELP
           raise ArgumentError, "illegal number (must be greater than 0): %d" % num_of_lines unless num_of_lines > 0
 
           @opts[:num_of_lines] = num_of_lines
+        when "-r", "--raw"
+          @opts[:raw] = true
         else
           args.unshift(arg)
           break
         end
       end
+    end
+
+    def read_timestamps(args, repo)
+      utils = Rbnotes.utils
+      if args.empty?
+        stamps = utils.read_multiple_timestamps(args)
+      else
+        patterns = utils.read_timestamp_patterns(args)
+        stamps = utils.find_notes(patterns, repo)
+      end
+      stamps
     end
 
     def puts_with_pager(pager, output)
@@ -108,7 +126,7 @@ HELP
 
       _, column = IO.console_size
       output = content.map { |timestamp, text|
-        ary = [make_heading(timestamp, [column, 72].min)]
+        ary = [make_heading(timestamp, column - 10)]
         ary.concat(text)
         ary
       }

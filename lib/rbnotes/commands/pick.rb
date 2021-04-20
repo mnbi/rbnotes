@@ -23,11 +23,14 @@ module Rbnotes::Commands
       utils = Rbnotes.utils
       patterns = utils.read_timestamp_patterns(args, enum_week: @opts[:enum_week])
 
-      @repo = Textrepo.init(conf)
+      repo = Textrepo.init(conf)
+
+      stamps = utils.find_notes(patterns, repo)
+      return if stamps.empty?
 
       list = []
-      utils.find_notes(patterns, @repo).each { |timestamp|
-        list << utils.make_headline(timestamp, @repo.read(timestamp))
+      stamps.each { |timestamp|
+        list << utils.make_headline(timestamp, repo.read(timestamp))
       }
 
       picker = conf[:picker]
