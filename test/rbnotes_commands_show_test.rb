@@ -10,7 +10,7 @@ class RbnotesCommandsShowTest < Minitest::Test
 
   def test_that_it_can_show_the_specified_note
     files = [
-      "20201012005000.md",
+      "20200912005000_089.md",
       "20201012005000_089.md",
     ]
     cmd = load_cmd(:show)
@@ -26,7 +26,7 @@ class RbnotesCommandsShowTest < Minitest::Test
   end
 
   def test_that_it_reads_arg_from_stdin_when_no_args
-    timestamp_str = "20201012005001"
+    timestamp_str = "20201012005001_089"
     file = timestamp_to_path(timestamp_str, repo_path(@conf_ro))
 
     cmd = load_cmd(:show)
@@ -77,7 +77,9 @@ class RbnotesCommandsShowTest < Minitest::Test
   def test_it_raises_missing_timestamp_when_valid_but_missing_timestamp_is_passed
     arg = "2999-12-31_23:59:59".tr("-_:", "")
     assert_raises(Rbnotes::MissingTimestampError) {
-      execute(:show, [arg], @conf_ro)
+      $stdin = StringIO.new(arg)
+      execute(:show, [], @conf_ro)
+      $stdin = STDOUT
     }
   end
 
