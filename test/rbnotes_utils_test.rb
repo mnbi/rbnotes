@@ -22,9 +22,9 @@ class RbnotesUtilsTest < Minitest::Test
     result = Rbnotes.utils.find_editor(abs_of_editor)
     if FileTest.exist?(abs_of_editor)
       assert_equal abs_of_editor, result
-    elsif FileTest.exist?(abs_of_nano)
+    elsif abs_of_nano and FileTest.exist?(abs_of_nano)
       assert_equal abs_of_nano, result
-    elsif FileTest.exist?(abs_of_vi)
+    elsif abs_of_vi and FileTest.exist?(abs_of_vi)
       assert_equal abs_of_vi, result
     else
       refute result
