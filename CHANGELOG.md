@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-- nothing to record here.
+- Fix issue #119: a test for `Rbnotes::Utils` may fails.
+  - fix the test.
 
 ## [0.4.17] - 2021-04-21
 ### Added
