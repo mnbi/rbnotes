@@ -92,10 +92,15 @@ module Rbnotes::Commands
 usage:
     #{Rbnotes::NAME} list [OPTIONS] [STAMP_PATTERN|KEYWORD]
 
-Show a list of notes.  When no arguments, make a list with all notes
-in the repository.  When specified STAMP_PATTERN, only those match the
-pattern are listed.  Instead of STAMP_PATTERN, some KEYWORDs could be
+Show a list of notes.  When specified several STAMP_PATTERNs, only
+those match the pattern are listed.  Also, some KEYWORDs could be
 used.
+
+When no STAMP_PATTERN or KEYWORD was specified, the behavior of this
+command could be specified with a configuration setting,
+":list_default:".  The value must be one of valid keywords.  If no
+settings was also given, this command would behave like "today" was
+specified as the setting.
 
 OPTIONS:
     -v, --verbose
@@ -129,12 +134,6 @@ like as follows:
     2021-04-18 (1)
       20210418125353: Hoge
           :
-
-When no STAMP_PATTERN or KEYWORD was specified, the behavior of this
-command could be specified with a configuration setting,
-":list_default:".  The value must be one of valid keywords.  If no
-settings was also given, this command would behave like "today" was
-specified as the setting.
 
 An option "--week" is also acceptable.  It specifies to enumerate all
 days of a week.  Typically, the option is used with a STAMP_PATTERN
