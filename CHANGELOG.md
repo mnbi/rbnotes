@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- Add description about `ugrep` to `README.md`. (#122)
 - Fix issue #118: help text of `list` is wrong.
 - Fix issue #119: a test for `Rbnotes::Utils` may fails.
   - fix the test.

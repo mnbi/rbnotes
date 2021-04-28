@@ -170,13 +170,15 @@ don't have to set `:searcher_options` for them.
 | `ggrep`  | `["-i", "-n", "-H", "-R", "-E"]`                   |
 | `gegrep` | `["-i", "-n", "-H", "-R"]`                         |
 | `rg`     | `["-S", "-n", "--no-heading", "--color", "never"]` |
+| `ugrep`  | `["-i", "-n", "-H", "-R", "--color=never"]`        |
 
 Those searcher names are used in macOS (with Homebrew).  Any other OS
 might use different names.
 
 - `grep` and `egrep` -> BSD grep (macOS default)
-- `ggrep` and `gegrep` -> GNU grep
-- `rg` -> ripgrep
+- `ggrep` and `gegrep` -> [GNU grep](https://www.gnu.org/software/grep/)
+- `rg` -> [BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep)
+- `ugrep` -> [Genivia/ugrep](https://github.com/Genivia/ugrep)
 
 If the name is different, `:searcher_options` should be set with the
 same value.  For example, if you system use the name `gnugrep` as GNU
