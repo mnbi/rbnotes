@@ -149,6 +149,7 @@ The short-hand notation of the home directory ("~") is usable.
 
 ##### Miscellaneous variables (optional)
 
+- :template : specify a template file for `add` command
 - :pager : specify a pager program
 - :editor : specify a editor program
 - :searcher: specify a program to perform search
@@ -185,6 +186,48 @@ same value.  For example, if you system use the name `gnugrep` as GNU
 grep, and you want to use it as the searcher (that is, set `gnugrep`
 to `:searcher`), you should set `:searcher_options` value with `["-i",
 "-n", "-R", "-E"]`.
+
+##### Template file for `add` command
+
+`Add` command always searches a template file in the default
+directory.  The default directory is,
+
+- `$XDG_CONIFG_HOME/rbnotes/templates` (if `$XDG_CONFIG_HOME` is defined)
+
+or
+
+- `$HOME/.config/rbnotes/templates`
+
+If a file which named as `default.md` is found in the above directory,
+it will use as a template file to generate the initial content of a
+new note.
+
+When a command line option or a setting of the configuration file is
+specified to use a template file, `add` command will read it instead
+of the default template file.
+
+Command line option of `add` to specify a template file is:
+
+``` shell
+> rbntoes add -f /somewhere/template.md
+```
+
+See the above section about the configuration file setting to specify
+a template file.
+
+Though a template file can be written any format of text (markdown,
+HTML, plain text, or ...), `add` command will process the content
+using ERB.  So, using ERB syntax, you can mix Ruby code in a template
+file.
+
+Here is a very simple and short example to use ERB syntax:
+
+``` markdown
+## <%= Time.now.strftime("%Y-%m-%d") %>
+```
+
+It just insert a date string like "2021-04-29" at the top of a new
+note which generates by `add` command.
 
 ##### Default values for mandatory variables
 

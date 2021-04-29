@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- (nothing to record here)
+
+## [0.4.18] - 2021-04-29
+### Added
+- Use ERB to generate the initial content of a new note from the
+  template file (`add`) (#125)
+
+### Fixed
+- Add info about template feature of `add`: (#124)
+  - update help text of `add`,
+  - update `README.md`.
 - Add description about `ugrep` to `README.md`. (#122)
 - Fix issue #118: help text of `list` is wrong.
 - Fix issue #119: a test for `Rbnotes::Utils` may fails.
