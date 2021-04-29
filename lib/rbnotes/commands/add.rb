@@ -1,5 +1,7 @@
 module Rbnotes::Commands
 
+  require "erb"
+
   ##
   # Adds a new note to the repository.  If no options, a new timestamp
   # is generated at the execution time, then it is attached to the
@@ -16,15 +18,39 @@ module Rbnotes::Commands
   #   "202011041722"       : year, date and time (omit second part)
   #   "11041722"           : date and time (omit year and second part)
   #
+  # Also accepts an option with `-f FILENAME` (or `--template-file`)
+  # to specify a template file which will be the initial content of a
+  # new note.
+  #
   # This command starts the external editor program to prepare text to
   # store.  The editor program will be searched in the following order:
   #
-  # 1. conf[:editor] (conf is the 1st arg of execute method)
-  # 2. ENV["EDITOR"]
-  # 3. "nano"
-  # 4. "vi"
+  #   1. conf[:editor] (conf is the 1st arg of execute method)
+  #   2. ENV["EDITOR"]
+  #   3. "nano"
+  #   4. "vi"
   #
   # If none of the above editor is available, the command fails.
+  #
+  # TEMPLATE FILE:
+  #
+  # This command search a file as its template which will be the initial
+  # conent of a new note when an option or a setting in the configuration
+  # file (`:template`) is specified a template file.
+  #
+  # Or, even if neither an option nor a setting about a template file is
+  # specified, it always searches the default directory to read a template
+  # file.  The directory is:
+  #
+  #   - $XDG_CONIFG_HOME/rbnotes/templates (if $XDG_CONFIG_HOME is defined)
+  # or
+  #   - $HOME/.config/rbnotes/templates
+  #
+  # If a file, `default.md` exists in the above directory, it will used as
+  # a template.
+  #
+  # A template file can be written in ERB syntax.  See ERB manual to know
+  # about how to mix ruby code and text content in ERB syntax.
 
   class Add < Command
 
@@ -78,15 +104,25 @@ usage:
 Add a new note to the repository.  If no options, a new timestamp is
 generated at the execution time, then it is attached to the note.
 
-Accept an option with `-t STAMP_PATTERN` (or `--timestamp`), a
-timestamp is generated according to `STAMP_PATTERN`.
+OPTIONS:
+    -t, --timestamp STAMP_PATTERN
+    -f, --template-file FILENAME
 
-STAMP_PATTERN could be one of followings:
+Accept an option with `-t STAMP_PATTERN` (or `--timestamp`), a
+timestamp of a new note is generated according to `STAMP_PATTERN`.
+
+Also accepts an option with `-f FILENAME` (or `--template-file`) to
+specify a template file which will be the initial content of a new
+note.  See below section more about a template file.
+
+STAMP_PATTERN could be:
 
     "20201104172230_078" : full qualified timestamp string
     "20201104172230"     : full qualified timestamp string (no suffix)
     "202011041722"       : year, date and time (omit second part)
     "11041722"           : date and time (omit year and second part)
+
+EDITOR:
 
 This command starts the external editor program to prepare text to
 store.  The editor program will be searched in the following order:
@@ -97,6 +133,29 @@ store.  The editor program will be searched in the following order:
     4. "vi"
 
 If none of the above editor is available, the execution fails.
+
+TEMPLATE FILE:
+
+This command search a file as its template which will be the initial
+conent of a new note when an option or a setting in the configuration
+file (`:template`) is specified a template file.
+
+Or, even if neither an option nor a setting about a template file is
+specified, it always searches the default directory to read a template
+file.  The directory is:
+
+- $XDG_CONIFG_HOME/rbnotes/templates (if $XDG_CONFIG_HOME is defined)
+
+or
+
+- $HOME/.config/rbnotes/templates
+
+If a file, `default.md` exists in the above directory, it will used as
+a template.
+
+A template file can be written in ERB syntax.  See ERB manual to know
+about how to mix ruby code and text content in ERB syntax.
+
 HELP
     end
 
@@ -144,10 +203,15 @@ HELP
 
       if template_path
         raise Rbnotes::NoTemplateFileError, template_path unless FileTest.exist?(template_path)
-        template = File.readlines(template_path, chomp: true)
       else
         template_path = default_template_file(conf)
-        template = File.readlines(template_path, chomp: true) if FileTest.exist?(template_path)
+        return nil unless FileTest.exist?(template_path)
+      end
+
+      erb_source = File.read(template_path)
+      if erb_source and !erb_source.empty?
+        erb = ERB.new(erb_source)
+        template = erb.result.split("\n")
       end
 
       template
