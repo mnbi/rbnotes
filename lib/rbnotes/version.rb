@@ -1,4 +1,4 @@
 module Rbnotes
-  VERSION = "0.4.18"
-  RELEASE = "2021-04-29"
+  VERSION = "0.4.19"
+  RELEASE = "2021-05-24"
 end
