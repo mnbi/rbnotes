@@ -29,6 +29,9 @@ module Rbnotes::Commands
     end
 
     def execute(args, conf)
+      @opts = {}
+      parse_opts(args)
+
       pattern = args.shift
       raise MissingArgumentError, args if pattern.nil?
 
@@ -46,10 +49,17 @@ module Rbnotes::Commands
     def help                    # :nodoc:
       puts <<HELP
 usage:
-    #{Rbnotes::NAME} search PATTERN [STAMP_PATTERN]
+    #{Rbnotes::NAME} search [OPTIONS] PATTERN [STAMP_PATTERN]
 
 PATTERN is a word (or words) to search, it may also be a regular
 expression.
+
+OPTIONS:
+    -s, --subject-only
+
+An option "--subject-only" is acceptable.  It specifies to search in
+only the subject of each note.  The subject means the first line of
+the note text.
 
 STAMP_PATTERN must be:
 
@@ -58,10 +68,24 @@ STAMP_PATTERN must be:
     (c) year and month part: "202010"
     (d) year part only: "2020"
     (e) date part only: "1030"
+
 HELP
     end
 
     private
+
+    def parse_opts(args)
+      while args.size > 0
+        arg = args.shift
+        case arg
+        when "-s", "--subject-only"
+          @opts[:subject_only] = true
+        else
+          args.unshift(arg)
+          break
+        end
+      end
+    end
 
     # Each entry of search result is:
     #
@@ -84,6 +108,10 @@ HELP
     }
 
     def print_search_result(entries)
+      if @opts[:subject_only]
+        entries.select!{|e| e.line_number == 1}
+      end
+
       maxcol_stamp = entries.map(&:timestamp_size).max
       maxcol_num = entries.map(&:line_number_digits_size).max
 
@@ -91,7 +119,11 @@ HELP
         stamp_display = "%- *s" % [maxcol_stamp, e.timestamp]
         num_display = "%*d" % [maxcol_num, e.line_number]
 
-        puts "#{stamp_display}: #{num_display}: #{e.matched_text}"
+        if @opts[:subject_only]
+          puts "#{stamp_display}: #{e.matched_text}"
+        else
+          puts "#{stamp_display}: #{num_display}: #{e.matched_text}"
+        end
       }
     end
 

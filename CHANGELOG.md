@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 - (nothing to record here)
 
+## [0.4.19] - 2021-05-24
+### Added
+- Add an option to search in only the subject of each note. (#128)
+
+### Modified
+- Update copyright year in `LICENSE`. (#127)
+
+### Fixed
+- Fix #129: add description about the keyword, "all."
+
 ## [0.4.18] - 2021-04-29
 ### Added
 - Use ERB to generate the initial content of a new note from the

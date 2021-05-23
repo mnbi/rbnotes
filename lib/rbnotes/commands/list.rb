@@ -33,6 +33,7 @@ module Rbnotes::Commands
     #   - "last_week"  (or "lw")
     #   - "this_month" (or "tm")
     #   - "last_month" (or "lm")
+    #   - "all"
     #
     # Here is several examples of timestamp patterns.
     #
@@ -106,23 +107,6 @@ OPTIONS:
     -v, --verbose
     -w, --week
 
-STAMP_PATTERN must be:
-
-    (a) full qualified timestamp (with suffix): "20201030160200"
-    (b) year and date part: "20201030"
-    (c) year and month part: "202010"
-    (d) year part only: "2020"
-    (e) date part only: "1030"
-
-KEYWORD:
-
-    - "today"      (or "to")
-    - "yeasterday" (or "ye")
-    - "this_week"  (or "tw")
-    - "last_week"  (or "lw")
-    - "this_month" (or "tm")
-    - "last_month" (or "lm")
-
 An option "--verbose" is acceptable.  It specifies to counts number of
 notes by each day, then put it with the date before notes.  It looks
 like as follows:
@@ -140,11 +124,32 @@ days of a week.  Typically, the option is used with a STAMP_PATTERN
 which specifies a date, such "20201117", then it enumerates all days
 of the week which contains "17th November 2020".
 
+STAMP_PATTERN must be:
+
+    (a) full qualified timestamp (with suffix): "20201030160200"
+    (b) year and date part: "20201030"
+    (c) year and month part: "202010"
+    (d) year part only: "2020"
+    (e) date part only: "1030"
+
 A STAMP_PATTERN other than (a) and (b) causes an error if it was used
 with "--week" option.
 
 When no STAMP_PATTERN was specified with "--week" option, the output
 would be as same as the KEYWORD, "this_week" was specified.
+
+KEYWORD:
+
+    - "today"      (or "to")
+    - "yeasterday" (or "ye")
+    - "this_week"  (or "tw")
+    - "last_week"  (or "lw")
+    - "this_month" (or "tm")
+    - "last_month" (or "lm")
+    - "all"
+
+The keyword, "all" specifies to enumerate all notes in the repository.
+
 HELP
     end
 
