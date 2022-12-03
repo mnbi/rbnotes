@@ -45,7 +45,7 @@ class RbnotesCommandsTest < Minitest::Test
   # Builtins::Stamp
   def test_that_builtin_stamp_can_convert_time_str
     time_str = "2020-01-01 00:00:00"
-    time = Time.new(time_str)
+    time = ts_to_time(time_str)
     expected = time_str.tr("- :", "")
     result = execute(:stamp, [time.to_s], CONF_RW)
 
@@ -55,19 +55,31 @@ class RbnotesCommandsTest < Minitest::Test
   # Builtins::Time
   def test_that_builtin_time_can_convert_timestamp_str
     time_str = "2020-01-01 00:00:01"
-    expected = Time.new(time_str)
+    expected = ts_to_time(time_str)
     stamp_str = time_str.tr("- :", "")
     result = execute(:time, [stamp_str], CONF_RW)
 
-    assert_equal expected, Time.new(result.chomp)
+    assert_equal expected, ts_to_time(result.chomp)
   end
 
   def test_that_builtin_time_can_convert_timestamp_str_with_suffix
     time_str = "2020-01-01 00:00:02"
-    expected = Time.new(time_str)
+    expected = ts_to_time(time_str)
     stamp_str = time_str.tr("- :", "") + "_012"
     result = execute(:time, [stamp_str], CONF_RW)
 
-    assert_equal expected, Time.new(result.chomp)
+    assert_equal expected, ts_to_time(result.chomp)
   end
+
+  private
+
+  def ts_to_time(time_str)
+    comp = time_str.split(/[- :]/)
+    if comp.size > 6
+      Time.new(*comp[0,6], "+09:00")
+    else
+      Time.new(*comp)
+    end
+  end
+
 end
