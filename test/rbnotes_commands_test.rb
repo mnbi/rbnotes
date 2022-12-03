@@ -74,9 +74,10 @@ class RbnotesCommandsTest < Minitest::Test
   private
 
   def ts_to_time(time_str)
+    tz = Time.now.to_s.split(" ")[-1]
     comp = time_str.split(/[- :]/)
     if comp.size > 6
-      Time.new(*comp[0,6], "+09:00")
+      Time.new(*comp[0,6], tz)
     else
       Time.new(*comp)
     end
