@@ -22,6 +22,7 @@ module Rbnotes::Commands
 
     def execute(args, conf)
       stamp = Rbnotes.utils.read_timestamp(args)
+      args.shift                # drop the 1st argument
 
       repo = Textrepo.init(conf)
       begin
