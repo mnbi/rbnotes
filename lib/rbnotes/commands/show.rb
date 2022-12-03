@@ -22,7 +22,7 @@ module Rbnotes::Commands
       parse_opts(args)
 
       repo = Textrepo.init(conf)
-      stamps = read_timestamps(args, repo)
+      stamps = read_timestamps(args, repo, conf)
       return if stamps.empty?
 
       content = stamps.map { |stamp|
@@ -98,13 +98,14 @@ HELP
       end
     end
 
-    def read_timestamps(args, repo)
+    def read_timestamps(args, repo, conf)
       utils = Rbnotes.utils
       if args.empty?
         stamps = utils.read_multiple_timestamps(args)
       else
         patterns = utils.read_timestamp_patterns(args)
-        stamps = utils.find_notes(patterns, repo)
+        num_of_notes = utils.specified_recent?(args) ? conf[:number_of_recent_notes] : 0
+        stamps = utils.find_notes(patterns, repo, num_of_notes)
       end
       stamps
     end

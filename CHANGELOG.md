@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 - (nothing to record here)
 
+## [0.4.20] - 2022-12-03
+### Added
+- Add a new keyword, `recent`. (#131)
+
 ## [0.4.19] - 2021-05-24
 ### Added
 - Add an option to search in only the subject of each note. (#128)

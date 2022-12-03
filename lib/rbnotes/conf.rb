@@ -31,6 +31,12 @@ module Rbnotes
 
     DIRNAME_COMMON_CONF = ".config"
 
+    ##
+    # Name of the number of notes to enumerate.  The values is
+    # referred only to enumerate the recent notes.
+
+    NUMBER_OF_RECENT_NOTES = 10
+
     def initialize(path = nil)   # :nodoc:
       @conf = {}
 
@@ -90,6 +96,7 @@ module Rbnotes
       :repository_type => :file_system,
       :repository_name => "notes",
       :repository_base => "~",
+      :number_of_recent_notes => 10,
     }
 
     MODE_POSTFIX = {

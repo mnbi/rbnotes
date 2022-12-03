@@ -125,6 +125,8 @@ module Rbnotes
     #   read_timestamp(args) -> String
 
     def read_timestamp(args)
+      args = args.dup
+
       str = args.shift || read_arg($stdin)
       raise NoArgumentError if str.nil?
 
@@ -163,6 +165,9 @@ module Rbnotes
     # Commands::Pick#execute.
     #
     def read_timestamp_patterns(args, enum_week: false)
+      args = args.dup
+
+      validate_arguments(args)
       patterns = nil
       if enum_week
         args.unshift(Time.now.strftime("%Y%m%d")) if args.size == 0
@@ -254,12 +259,13 @@ module Rbnotes
     #   expand_keyword_in_args(Array of Strings) -> Array of Strings
     #
     def expand_keyword_in_args(args)
+      args = args.dup
       patterns = []
       while args.size > 0
         arg = args.shift
-        if arg == "all"
+        if arg == "all" or arg == "recent" or arg == "re"
           return [nil]
-        elsif KEYWORDS.include?(arg)
+        elsif valid_keyword?(arg)
           patterns.concat(expand_keyword(arg))
         else
           patterns << arg
@@ -304,13 +310,27 @@ module Rbnotes
     # given repository.  Returns an Array contains Timestamp objects.
     # The returned Array is sorted by Timestamp.
     #
+    # When a positive number was specified as the 3rd argument, the
+    # number was used as the limitation count of enumerated notes.
+    #
     # :call-seq:
-    #     find_notes(Array of timestamp patterns, Textrepo::Repository)
+    #     find_notes(Array of timestamp patterns, Textrepo::Repository, Integer)
 
-    def find_notes(timestamp_patterns, repo)
-      timestamp_patterns.map { |pat|
+    def find_notes(timestamp_patterns, repo, num_of_notes = 0)
+      notes = timestamp_patterns.map { |pat|
         repo.entries(pat)
       }.flatten.sort{ |a, b| b <=> a }.uniq
+
+      if num_of_notes > 0
+        notes[0,num_of_notes]
+      else
+        notes
+      end
+    end
+
+    def specified_recent?(args)
+      validate_arguments(args)
+      args.include?("recent") or args.include?("re")
     end
 
     # :stopdoc:
@@ -361,6 +381,30 @@ module Rbnotes
     end
 
     ##
+    # Validates arguments as timestamp strings or keywords.  If all
+    # arguments are valid as timestamp strings or keywords, do
+    # nothing.  Otherwise, raise an error.
+    #
+    # :call-seq:
+    #   validate_arguments(an array of strings) -> nil
+    #
+    def validate_arguments(args)
+      args.each { |arg|
+        unless valid_keyword?(arg) or valid_timestamp_pattern?(arg)
+          raise InvalidTimestampPatternError, arg
+        end
+      }
+    end
+
+    def valid_keyword?(arg)
+      KEYWORDS.include?(arg)
+    end
+
+    def valid_timestamp_pattern?(arg)
+      !/[^_\d]/.match(arg)
+    end
+
+    ##
     # Expands a keyword to timestamp strings.
     #
     # :call-seq:
@@ -388,6 +432,8 @@ module Rbnotes
     end
 
     KEYWORDS = %w(
+      all
+      recent re
       today to yesterday ye
       this_week tw last_week lw
       this_month tm last_month lm
