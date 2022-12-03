@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-- (nothing to record here)
+- Fix issue #133: some tests fail.
 
 ## [0.4.20] - 2022-12-03
 ### Added
