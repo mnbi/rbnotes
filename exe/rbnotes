@@ -66,6 +66,7 @@ rescue MissingArgumentError, MissingTimestampError,
        InvalidTimestampPatternAsDateError,
        NoConfFileError,
        NoTemplateFileError,
+       UnknownKeywordError,
        ArgumentError,
        Errno::EACCES => e
   puts e.message

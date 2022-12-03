@@ -33,6 +33,7 @@ module Rbnotes::Commands
     #   - "last_week"  (or "lw")
     #   - "this_month" (or "tm")
     #   - "last_month" (or "lm")
+    #   - "recent"     (or "re")
     #   - "all"
     #
     # Here is several examples of timestamp patterns.
@@ -67,9 +68,11 @@ module Rbnotes::Commands
 
       utils = Rbnotes.utils
       patterns = utils.read_timestamp_patterns(args, enum_week: @opts[:enum_week])
-
       repo = Textrepo.init(conf)
-      stamps = utils.find_notes(patterns, repo)
+
+      num_of_notes = utils.specified_recent?(args) ? conf[:number_of_recent_notes] : 0
+      stamps = utils.find_notes(patterns, repo, num_of_notes)
+
       output = []
       if @opts[:verbose]
         collect_timestamps_by_date(stamps).each { |date, timestamps|
@@ -146,9 +149,12 @@ KEYWORD:
     - "last_week"  (or "lw")
     - "this_month" (or "tm")
     - "last_month" (or "lm")
+    - "recent"     (or "re")
     - "all"
 
-The keyword, "all" specifies to enumerate all notes in the repository.
+The keyword, "recent" specifies to enumerate recent notes in the
+repository.  The keyword, "all" specifies to enumerate all notes in
+the repository.
 
 HELP
     end

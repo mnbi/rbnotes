@@ -25,7 +25,8 @@ module Rbnotes::Commands
 
       repo = Textrepo.init(conf)
 
-      stamps = utils.find_notes(patterns, repo)
+      num_of_notes = utils.specified_recent?(args) ? conf[:number_of_recent_notes] : 0
+      stamps = utils.find_notes(patterns, repo, num_of_notes)
       return if stamps.empty?
 
       list = []
