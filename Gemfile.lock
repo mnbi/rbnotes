@@ -1,26 +1,28 @@
 PATH
   remote: .
   specs:
-    rbnotes (0.4.20)
-      textrepo (~> 0.5.9)
-      unicode-display_width (~> 1.8)
+    rbnotes (0.4.21)
+      textrepo (~> 0.5.10)
+      unicode-display_width (~> 2.6)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    minitest (5.16.3)
-    rake (13.0.6)
-    textrepo (0.5.9)
-    unicode-display_width (1.8.0)
+    minitest (5.25.1)
+    rake (13.2.1)
+    textrepo (0.5.10)
+    unicode-display_width (2.6.0)
 
 PLATFORMS
   x86_64-darwin-22
+  x86_64-darwin-23
 
 DEPENDENCIES
-  minitest (~> 5.0)
-  rake (~> 13.0)
+  bundler (~> 2.5)
+  minitest (~> 5.20)
+  rake (~> 13.1)
   rbnotes!
-  textrepo (~> 0.5.9)
+  textrepo (~> 0.5.10)
 
 BUNDLED WITH
-   2.3.26
+   2.5.18
