@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+- (nothing)
+
+## [0.4.21] - 2022-11-03
+- Use ruby 3.3.5.
+- Remove the codefactor badge from `README.md`
+- Add copyright year (2024) to `LICENSE`.
+- Fix issue #135: incomplete timestamp patterns are acceptable.
 - Fix issue #133: some tests fail.
 
 ## [0.4.20] - 2022-12-03

@@ -200,6 +200,30 @@ class RbnotesCommandsListTest < Minitest::Test
     refute result.include?(str)
   end
 
+  # [issue #135]
+  def test_it_can_accept_incomplete_timestamp_string
+    patterns = [
+      "20201",
+      "2020101",
+      "202010120",
+      "20201012005",
+      "2020101200500",
+      # 2020-10-12 00:50:0?
+    ]
+
+
+    patterns.each { |pat|
+      files = Dir.glob("#{repo_path(CONF_RO)}/**/#{pat}*.md").map{|f| File.basename(f)}
+      result = execute(:list, [pat], CONF_RO)
+      refute result.empty?
+
+      result.lines.each { |line|
+        timestamp_str = line.chomp.split(":")[0].rstrip
+        assert_includes files, "#{timestamp_str}.md"
+      }
+    }
+  end
+
   private
 
   def extract_subject(file)

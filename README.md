@@ -1,7 +1,6 @@
 # Rbnotes
 
 [![Build Status](https://github.com/mnbi/rbnotes/workflows/Build/badge.svg)](https://github.com/mnbi/rbnotes/actions?query=workflow%3A"Build")
-[![CodeFactor](https://www.codefactor.io/repository/github/mnbi/rbnotes/badge)](https://www.codefactor.io/repository/github/mnbi/rbnotes)
 
 Rbnotes is a simple utility to write a note in the single repository.
 
